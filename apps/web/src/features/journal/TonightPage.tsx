@@ -437,8 +437,8 @@ function Prompt({
       ref={ref}
       tabIndex={-1}
       className={cn(
-        'font-serif font-normal tracking-[-0.015em] outline-none',
-        large ? 'text-[42px] leading-[1.05]' : 'text-[30px] leading-[1.15]',
+        'font-medium outline-none',
+        large ? 'text-[38px] leading-[1.1]' : 'text-[27px] leading-[1.2]',
       )}
     >
       {children}

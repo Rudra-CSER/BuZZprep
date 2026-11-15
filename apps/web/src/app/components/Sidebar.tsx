@@ -1,6 +1,7 @@
 import { CalendarCog, Flag, ListChecks, WifiOff } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { Logo } from '@/components/Logo';
+import { Wordmark } from '@/components/Wordmark';
 import { useReview } from '@/features/schedule/api';
 import { cn } from '@/lib/utils';
 import { AccountMenu } from './AccountMenu';
@@ -16,7 +17,7 @@ export function Sidebar({ online }: { online: boolean }) {
     <aside className="chrome sticky top-0 hidden h-dvh w-[calc(16.5rem+var(--safe-left))] shrink-0 flex-col pb-[calc(var(--safe-bottom)+0.75rem)] pl-[var(--safe-left)] pt-[calc(var(--safe-top)+1.25rem)] lg:flex">
       <Link to="/" className="mx-5 mb-7 flex w-fit items-center gap-2.5 rounded-[10px]">
         <Logo decorative className="size-8 rounded-[9px]" />
-        <span className="text-[18px] font-semibold tracking-[-0.015em]">buZZprep</span>
+        <Wordmark className="text-[22px] leading-none" />
       </Link>
 
       <nav aria-label="Main" className="grid grid-cols-1 gap-0.5 px-3">

@@ -11,6 +11,7 @@ export default tseslint.config(
       '**/dev-dist/**',
       '**/node_modules/**',
       '**/coverage/**',
+      '**/.wrangler/**',
       'apps/web/public/**',
       // Local-only folders (git-ignored): data exports and safety copies.
       'data/**',

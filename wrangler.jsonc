@@ -1,0 +1,22 @@
+// Cloudflare Workers configuration for the web app. Workers Builds runs `npm run build` and then
+// `npx wrangler deploy` in the repository root, which reads this file. Cloudflare serves the
+// built PWA from apps/web/dist; the Worker in apps/web/worker only handles /api/*.
+// The server can't run on Workers: see docs/DEPLOYMENT.md › Web app on Cloudflare.
+{
+  // Must match the Worker's name in the Cloudflare dashboard.
+  "name": "buzzprep",
+  "main": "apps/web/worker/index.ts",
+  "compatibility_date": "2026-11-15",
+  "assets": {
+    "directory": "apps/web/dist",
+    "binding": "ASSETS",
+    // Client-side routes (/schedule, /journal/…) get index.html.
+    "not_found_handling": "single-page-application",
+    // API calls always reach the Worker, never the index.html fallback.
+    "run_worker_first": ["/api/*"],
+  },
+  // API_ORIGIN is set in the dashboard (Settings › Variables and Secrets); keep it on deploy.
+  "keep_vars": true,
+  "observability": { "enabled": true },
+  // Custom domains are added in the dashboard. Routes listed here would replace them on deploy.
+}

@@ -6,6 +6,7 @@ dist/
 dev-dist/
 coverage/
 *.tsbuildinfo
+.wrangler/
 
 # Environment & secrets — never commit real values
 .env

@@ -115,7 +115,7 @@ Log a problem (sheet)
 │ Earlier                         │
 │ ┌─────────────────────────────┐ │
 │ │ Thu 12 Nov   Evening   😊 4 │ │   mood + energy
-│ │ "Finally got sliding window…│ │   Newsreader serif for writing
+│ │ "Finally got sliding window…│ │   Newsreader for all text
 │ ├─────────────────────────────┤ │
 │ │ Sun 8 Nov    Weekly review  │ │
 │ └─────────────────────────────┘ │

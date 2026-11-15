@@ -119,9 +119,7 @@ export function FocusPage() {
         <span className="size-10" />
       </div>
       <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6">
-        <h1 className="max-w-sm text-center text-[22px] font-semibold leading-snug tracking-[-0.015em]">
-          {o.title}
-        </h1>
+        <h1 className="max-w-sm text-center text-[22px] font-semibold leading-snug">{o.title}</h1>
         <div className="relative grid size-[264px] place-items-center">
           <svg viewBox="0 0 264 264" className="absolute inset-0 -rotate-90" aria-hidden>
             <circle cx="132" cy="132" r={r} fill="none" strokeWidth="8" className="stroke-muted" />

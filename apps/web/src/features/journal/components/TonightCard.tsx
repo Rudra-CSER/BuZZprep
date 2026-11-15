@@ -52,7 +52,7 @@ export function TonightCard({ data }: { data: TonightResponse | undefined }) {
         className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-night-glow/10 blur-2xl"
       />
       <p className="text-[13px] text-muted-foreground">Tonight{bed ? ` · bed at ${bed}` : ''}</p>
-      <h2 className="mt-1 font-serif text-[26px] leading-tight tracking-[-0.01em]">{title}</h2>
+      <h2 className="mt-1 font-display text-[24px] font-semibold leading-tight">{title}</h2>
       <p className="mt-1.5 max-w-prose text-[14.5px] leading-snug text-muted-foreground">
         {detail}
       </p>

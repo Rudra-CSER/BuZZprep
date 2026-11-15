@@ -49,9 +49,7 @@ export function Page({
             {subtitle ? (
               <p className="mb-0.5 text-[14px] text-muted-foreground">{subtitle}</p>
             ) : null}
-            <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.022em] md:text-[30px]">
-              {title}
-            </h1>
+            <h1 className="text-[28px] font-bold leading-tight md:text-[30px]">{title}</h1>
           </div>
           {actions ? (
             <div className="flex shrink-0 items-center gap-1.5 pt-1">{actions}</div>

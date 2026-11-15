@@ -1,7 +1,62 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import '@fontsource-variable/instrument-sans/wdth.css';
-@import '@fontsource-variable/newsreader/opsz.css';
+/*
+ * Type, self-hosted and SIL OFL 1.1:
+ * - Newsreader for all text (files from @fontsource-variable/newsreader). Its x-height is 0.43 em
+ *   against 0.51 for Instrument Sans, which the app used before, so size-adjust brings it back to
+ *   the same reading size and the px sizes across the app keep their meaning.
+ * - Merienda for the main text (`font-display`, and every h1): the wordmark, page titles, the
+ *   greeting and the night journal's prompts. Files and licence in ./fonts/merienda. Its letters
+ *   are large for their size, so it is scaled down to sit at the sizes titles already use.
+ */
+@font-face {
+  font-family: 'Newsreader UI';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('@fontsource-variable/newsreader/files/newsreader-latin-ext-opsz-normal.woff2')
+    format('woff2-variations');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+  size-adjust: 112%;
+}
+@font-face {
+  font-family: 'Newsreader UI';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2')
+    format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 112%;
+}
+@font-face {
+  font-family: 'Merienda Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url('./fonts/merienda/merienda-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+  size-adjust: 90%;
+}
+@font-face {
+  font-family: 'Merienda Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url('./fonts/merienda/merienda-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  size-adjust: 90%;
+}
 
 @custom-variant dark (&:is(.dark *));
 /* Short screens, e.g. a phone held sideways. */
@@ -38,6 +93,13 @@
   --nav: oklch(0.975 0.003 280 / 0.94);
 
   /*
+   * Gold: the candle amber of the night journal and the "ZZ" of the wordmark. On the light paper
+   * gold text uses a deeper shade so it stays readable; on ink and in the dark theme it glows.
+   */
+  --gold-bright: oklch(0.82 0.11 76);
+  --gold: oklch(0.6 0.13 70);
+
+  /*
    * Chrome: the deep ink of the navigation (top bar, rail, sidebar). It is dark in both themes
    * so the iOS status bar's white text stays readable and the Dynamic Island blends into it.
    */
@@ -64,7 +126,7 @@
   --night-line: oklch(1 0 0 / 0.09);
   --night-text: oklch(0.93 0.018 85);
   --night-muted: oklch(0.72 0.022 275);
-  --night-glow: oklch(0.82 0.11 76);
+  --night-glow: var(--gold-bright);
 
   --cat-dsa: oklch(0.56 0.19 300);
   --cat-system_design: oklch(0.6 0.13 232);
@@ -101,6 +163,7 @@
   --input: oklch(0.33 0.016 280);
   --ring: oklch(0.66 0.18 278);
   --nav: oklch(0.17 0.012 280 / 0.95);
+  --gold: var(--gold-bright);
 
   --chrome: oklch(0.13 0.011 280);
   --chrome-foreground: oklch(0.95 0.006 280);
@@ -154,10 +217,13 @@
   --color-night-text: var(--night-text);
   --color-night-muted: var(--night-muted);
   --color-night-glow: var(--night-glow);
+  --color-gold: var(--gold);
 
-  --font-sans:
-    'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Newsreader Variable', ui-serif, Georgia, serif;
+  /* All text is Newsreader; "sans" keeps its name because it is Tailwind's default family. */
+  --font-sans: 'Newsreader UI', ui-serif, Georgia, serif;
+  --font-serif: 'Newsreader UI', ui-serif, Georgia, serif;
+  /* Main text: the wordmark, page titles, the greeting, the night journal's prompts. */
+  --font-display: 'Merienda Variable', 'Newsreader UI', ui-serif, Georgia, serif;
 
   --radius-sm: calc(var(--radius) - 6px);
   --radius-md: calc(var(--radius) - 4px);
@@ -197,6 +263,10 @@
   h2,
   h3 {
     text-wrap: balance;
+  }
+  /* Page titles are main text. */
+  h1 {
+    font-family: var(--font-display);
   }
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -270,6 +340,7 @@
   --border: var(--night-line);
   --input: oklch(1 0 0 / 0.15);
   --ring: var(--night-glow);
+  --gold: var(--gold-bright);
 }
 
 @utility chrome {
@@ -279,6 +350,7 @@
   --ring: var(--chrome-accent);
   --muted-foreground: var(--chrome-muted);
   --border: var(--chrome-line);
+  --gold: var(--gold-bright);
 }
 
 /* Category colour hook: set --cat on an element, then use tint/edge utilities. */

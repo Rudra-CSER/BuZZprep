@@ -9,7 +9,7 @@ This guide puts buZZprep on your own subdomain, for example `prep.example.com`, 
 - [4. Create your account](#4-create-your-account)
 - [5. Load your personal setup (optional)](#5-load-your-personal-setup-optional)
 - [6. Install on your phone](#6-install-on-your-phone)
-- [Updating](#updating) · [Forgotten password](#forgotten-password) · [Backups](#backups) · [Using nginx instead of Caddy](#using-nginx-or-another-reverse-proxy) · [Scaling the scheduler](#running-the-scheduler-separately) · [Local development](#local-development) · [Testing on an iPhone during development](#testing-on-an-iphone-during-development) · [Checklist](#security-checklist)
+- [Updating](#updating) · [Forgotten password](#forgotten-password) · [Backups](#backups) · [Using nginx instead of Caddy](#using-nginx-or-another-reverse-proxy) · [Web app on Cloudflare](#web-app-on-cloudflare) · [Scaling the scheduler](#running-the-scheduler-separately) · [Local development](#local-development) · [Testing on an iPhone during development](#testing-on-an-iphone-during-development) · [Checklist](#security-checklist)
 
 ## Requirements
 
@@ -178,6 +178,19 @@ Each user can also download their own data from **Profile → Download all data*
 3. The proxy must forward `Host` and `X-Forwarded-Proto`/`X-Forwarded-For`. The app trusts exactly one proxy hop (`TRUST_PROXY=1` in `docker-compose.yml`); change it if you chain proxies.
 
 Traefik, HAProxy or a Cloudflare Tunnel work the same way: send HTTPS traffic for your subdomain to `127.0.0.1:4000`.
+
+## Web app on Cloudflare
+
+Cloudflare can host the web app while the server runs elsewhere. `wrangler.jsonc` in the repository root sets this up: Cloudflare serves the built app (`apps/web/dist`) with the headers in `apps/web/public/_headers`, and a small Worker (`apps/web/worker/index.ts`) forwards `/api/*` to your server.
+
+The server itself can't run on Cloudflare Workers: it's a long-running Node.js process with a reminder scheduler, so it still needs a host from this guide (or a Cloudflare Tunnel to a computer that is always on). Until it's connected, every `/api` request gets `503` and the app says the server isn't connected yet.
+
+1. In the Cloudflare dashboard, **Workers & Pages → Create → Import a repository**, pick this repository and keep the build command `npm run build` and the deploy command `npx wrangler deploy`. The Worker's name must match `name` in `wrangler.jsonc` (`buzzprep`). Every push to the production branch deploys again.
+2. Add your subdomain: the Worker's **Settings → Domains & Routes → Add → Custom Domain**, for example `prep.example.com`. Cloudflare creates the DNS record and the certificate. Don't list routes in `wrangler.jsonc`: routes there replace the dashboard's on every deploy.
+3. Run the server at an address of its own, for example `prep-api.example.com` (steps 1–3 above, with that address as `APP_DOMAIN`), and set `PUBLIC_APP_URL` to the web app's address, `https://prep.example.com`: the server accepts requests whose `Origin` matches it and builds notification links from it.
+4. Connect the two: the Worker's **Settings → Variables and Secrets → Add**, name `API_ORIGIN`, value `https://prep-api.example.com`. `keep_vars` in `wrangler.jsonc` keeps it across deploys.
+
+To try the Cloudflare setup locally: `npm run build`, then `npx wrangler dev` serves the app on `http://localhost:8787` (add `--var API_ORIGIN:http://localhost:4000` to reach a local server).
 
 ## Running the scheduler separately
 

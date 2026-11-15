@@ -20,7 +20,7 @@ export function AuthFrame({
         <div className="grid gap-4">
           <Logo className="size-12 rounded-[14px]" />
           <div className="grid gap-1.5">
-            <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.022em]">{title}</h1>
+            <h1 className="text-[28px] font-bold leading-tight">{title}</h1>
             <p className="text-[15px] text-muted-foreground">{subtitle}</p>
           </div>
         </div>
