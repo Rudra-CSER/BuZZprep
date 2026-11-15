@@ -12,7 +12,7 @@ import {
   type TimeContext,
   toISO,
 } from '../time';
-import { KIND_URL, occurrenceUrl } from './links';
+import { journalTonightUrl, KIND_URL, occurrenceUrl } from './links';
 import { isWithinDailyRange } from './preferences';
 import { activityText, timeText } from './text';
 import type {
@@ -124,13 +124,15 @@ export function planNotifications(input: NotificationPlanInput): PlannedNotifica
         if (!inWindow(fireAt.toMillis())) continue;
         const text = activityText(rule, occ, prefs.hour12);
         const startMs = Date.parse(occ.start);
+        // The night journal reminder opens tonight's session and stays quiet once it is done.
+        const journal = rule.kind === 'journal';
         push(rule, fireAt, `${occ.activityId}:${occ.date}`, {
           activityId: occ.activityId,
           occurrenceDate: occ.date,
           ...text,
-          url: occurrenceUrl(occ.activityId, occ.date),
-          tag: `occ:${occ.activityId}:${occ.date}`,
-          condition: isTrackable(occ) ? 'occurrence_pending' : null,
+          url: journal ? journalTonightUrl(occ.date) : occurrenceUrl(occ.activityId, occ.date),
+          tag: journal ? `journal:${occ.date}` : `occ:${occ.activityId}:${occ.date}`,
+          condition: journal ? 'journal_pending' : isTrackable(occ) ? 'occurrence_pending' : null,
           category: occ.category,
           // An "upcoming" reminder that can no longer arrive before the start is pointless.
           maxLatenessSeconds:

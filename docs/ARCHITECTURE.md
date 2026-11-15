@@ -63,10 +63,12 @@ buZZprep/
 │   │   │   │   ├── auth/ account/ profile/ plans/ onboarding/ config/ reminders/
 │   │   │   │   ├── schedule/   Schedules, activities, agenda, occurrences, day modes
 │   │   │   │   ├── notifications/  Outbox planner and dispatcher, push sender, payloads, history
+│   │   │   │   ├── journal/    Night journal: entries, recordings (GridFS), weeks, prompts, AI jobs, worker
+│   │   │   │   ├── ai/         AI providers (registry, OpenAI, Anthropic), job queue
 │   │   │   │   └── dashboard/ meta/
 │   │   │   ├── lib/            Crypto helpers, errors, logging, parameter parsing, serialisation
 │   │   │   ├── routes.ts       The /api router: shared middleware, then every module's router
-│   │   │   ├── context.ts      What routers receive: the environment and the notification service
+│   │   │   ├── context.ts      What routers receive: the environment, notification and AI services
 │   │   │   ├── app.ts          Express app (security headers, /api, the PWA, error handling)
 │   │   │   ├── web.ts          Serves the built PWA with the right caching
 │   │   │   └── index.ts        Process entry point (API and/or scheduler by APP_ROLE)
@@ -91,6 +93,7 @@ buZZprep/
 │       │   ├── schedule/       Agenda expansion, day modes, occurrence status, free slots
 │       │   ├── reminders/      Reminder rules into planned notifications, quiet hours, wording
 │       │   ├── learning/       Spaced revision, preparation progress
+│       │   ├── journal/        Notes normalisation, weekly revision sheet, Markdown export, night window
 │       │   ├── habits.ts       Streaks and consistency
 │       │   ├── constants/      Categories, modes, reminder kinds and other fixed lists
 │       │   ├── schemas/        Request and config-bundle validation (zod)
@@ -168,6 +171,7 @@ Each area of the API is a folder in `apps/server/src/modules/` with two kinds of
 - **Express 5** with a module per feature (see [Code organisation](#server-modules)). Routes validate input with the same zod schemas the client uses, call the module's service, and return JSON. Errors are mapped centrally to `{ error: { code, message, issues? } }`.
 - **Process roles.** `APP_ROLE=all` (default) runs the API and the scheduler in one process. `api` and `worker` split them into separate containers when needed. Startup creates indexes explicitly and retries the database connection.
 - **Reminder scheduler.** Two loops: _reconcile_ re-plans every user's next 36 hours every 10 minutes (and a specific user's window about 1.5 seconds after they change something), and _dispatch_ sends due rows every 15 seconds. Both are guarded against overlap, and the outbox claim is atomic, so running several workers is safe.
+- **Journal AI (optional).** Voice clips are streamed into GridFS and transcribed by a speech-to-text provider; notes and weekly summaries come from a language model whose output is constrained by a JSON Schema and validated again on the server (`normalizeNotes`), because model output is untrusted. The work runs through a durable MongoDB job queue (`aijobs`) in the worker process: claimed atomically with a lease, retried on temporary provider errors, and reflected on the entry (`clips[].status`, `notesStatus`) so the app can show progress. Providers are listed in `modules/ai/providers/registry.ts`: OpenAI, Anthropic and Groq are active, and by default each feature uses the first one whose key is set; self-hosted alternatives (a Whisper server, Ollama) are written out there but commented out. Without keys the journal works fully, minus voice and generated notes.
 - **Static hosting.** In production the same process serves the built PWA with long-lived caching for hashed assets and `no-cache` for `index.html` and `sw.js`, so updates reach devices promptly.
 - **Logging** uses pino (JSON in production). Request logs exclude bodies.
 
@@ -194,7 +198,8 @@ Summary; details in [SECURITY.md](../SECURITY.md).
 - **Headers**: helmet with a strict Content-Security-Policy (no third-party scripts, fonts are self-hosted).
 - **Registration**: `open`, `invite` (requires `INVITE_CODE`) or `closed`. The first account on a new server becomes the admin.
 - **Isolation**: every query filters by the session's user id; there are no public profiles or shared journals. Notification acknowledgements from the service worker are authorised by a short-lived HMAC token tied to that notification and user.
-- **Secrets** (session secret, VAPID private key, database password) come from the environment and are never sent to the browser. The client only receives the VAPID public key.
+- **Secrets** (session secret, VAPID private key, database password, AI API keys) come from the environment and are never sent to the browser. The client only receives the VAPID public key and, once signed in, the names of the AI providers and models.
+- **Journal AI data flow**: only when AI is on for your journal (default on when the server has keys; one switch turns it off) are recordings sent to the speech-to-text provider and logs to the notes model. Recordings are deleted after transcription unless you keep them. Your words are passed to the model as data inside tags, never as instructions.
 - **Data rights**: download everything as JSON; delete your account and all of its data (requires your password and typing DELETE).
 
 ## Deployment topology
@@ -253,9 +258,14 @@ All pushes use the Declarative Web Push format with `mutable: true`. iOS 18.4+ c
 
 Templates, the setup wizard's output, your personal seed file and data import/export all use the same versioned JSON format (`format: "buzzprep.config", version: 1`), validated by one schema. Records reference each other by `ref` names rather than database ids, so bundles are portable between servers.
 
-### D9. No AI features in the first release
+### D9. AI only in the journal, optional and per user
 
-Per the brief. Nothing in the data model prevents adding them later; problem attempts already distinguish "solved independently" from "needed help", which any future assistant must respect.
+The first release had none, per the brief. At the maintainer's request the night journal now uses AI for two jobs that are hard to do by hand at 1 AM: transcribing a spoken study log, and turning it into short revision notes and a weekly review. Rules:
+
+- Optional twice over: the server needs API keys (nothing breaks without them), and each person can switch AI off for their journal.
+- Cloud providers behind a small registry: OpenAI `gpt-transcribe` or Groq `whisper-large-v3` for speech; Anthropic `claude-sonnet-5-5`, OpenAI or Groq `openai/gpt-oss-120b` for notes, whichever has a key. Local providers (a Whisper server, Ollama) are prepared there but commented out.
+- Notes record what the person said. The model may flag a doubtful statement as a "Check:" question but never rewrites their understanding, and "solved independently" vs "needed help" stays theirs to state.
+- Generated notes never overwrite notes the person wrote or edited.
 
 ### D10. Toolchain
 

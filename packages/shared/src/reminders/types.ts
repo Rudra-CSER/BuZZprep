@@ -47,7 +47,14 @@ export interface MilestoneRef {
   completed: boolean;
 }
 
-export type NotificationCondition = 'occurrence_pending' | 'missed_exists' | null;
+/**
+ * Re-checked by the dispatcher right before sending:
+ * - occurrence_pending: the session is still not marked done or skipped
+ * - missed_exists: there are sessions that need a decision
+ * - journal_pending: tonight's journal is not finished yet
+ */
+export type NotificationCondition =
+  'occurrence_pending' | 'missed_exists' | 'journal_pending' | null;
 export type SuppressedReason =
   'quiet_hours' | 'kind_disabled' | 'category_muted' | 'notifications_disabled' | null;
 

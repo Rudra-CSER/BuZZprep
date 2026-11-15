@@ -1,5 +1,6 @@
 import { CATEGORY_META, MODE_META, type ReminderKind } from '../constants';
 import type { Occurrence } from '../schedule';
+import { isNightSleep } from '../journal/night';
 import { formatTimeLabel, localTimeOf, parseTime } from '../time';
 import type { ReminderRule } from './types';
 
@@ -32,6 +33,14 @@ export function activityText(rule: ReminderRule, occ: Occurrence, hour12: boolea
         title: `Did you finish ${occ.title}?`,
         body: 'Mark it done, skip it, or pick a new slot — whatever is true.',
       };
+    case 'journal':
+      if (rule.anchor === 'activity_start' && rule.offsetMinutes < 0 && isNightSleep(occ)) {
+        return {
+          title: 'Tonight’s journal',
+          body: `${Math.abs(rule.offsetMinutes)} min to bed. Talk through what you studied, then put the phone down.`,
+        };
+      }
+      return { title: 'Tonight’s journal', body: 'Talk through what you studied today.' };
     case 'sleep':
       if (rule.anchor === 'activity_end' && occ.category === 'sleep') {
         return { title: 'Good morning — time to get up', body: 'Your day starts now.' };
@@ -62,8 +71,8 @@ export function timeText(kind: ReminderKind): { title: string; body: string } {
       return { title: 'Plan your day', body: 'Check today’s schedule and pick your top three.' };
     case 'journal':
       return {
-        title: 'Evening reflection',
-        body: 'Two minutes: what went well, and what to change tomorrow?',
+        title: 'Tonight’s journal',
+        body: 'Talk through what you studied today, then wind down.',
       };
     case 'weekly_review':
       return { title: 'Weekly review', body: 'See how the week went and plan the next one.' };

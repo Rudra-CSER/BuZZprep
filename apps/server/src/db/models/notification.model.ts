@@ -1,4 +1,4 @@
-import type { ReminderKind } from '@buzzprep/shared';
+import type { NotificationCondition, ReminderKind } from '@buzzprep/shared';
 import { Schema, model, type Types } from 'mongoose';
 
 export const NOTIFICATION_STATUSES = [
@@ -25,7 +25,8 @@ export interface DeliveryResult {
 export interface INotification {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
-  source: 'schedule' | 'snooze' | 'test';
+  /** schedule = planned from reminder rules; journal = one-off (e.g. weekly summary ready). */
+  source: 'schedule' | 'snooze' | 'test' | 'journal';
   dedupeKey: string;
   reminderId: Types.ObjectId | null;
   kind: ReminderKind;
@@ -36,7 +37,7 @@ export interface INotification {
   body: string;
   url: string;
   tag: string;
-  condition: 'occurrence_pending' | 'missed_exists' | null;
+  condition: NotificationCondition;
   urgency: 'high' | 'normal' | 'low';
   ttlSeconds: number;
   maxLatenessSeconds: number;
@@ -57,7 +58,11 @@ export interface INotification {
 const notificationSchema = new Schema<INotification>(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    source: { type: String, enum: ['schedule', 'snooze', 'test'], default: 'schedule' },
+    source: {
+      type: String,
+      enum: ['schedule', 'snooze', 'test', 'journal'],
+      default: 'schedule',
+    },
     dedupeKey: { type: String, required: true },
     reminderId: { type: Schema.Types.ObjectId, ref: 'Reminder', default: null },
     kind: { type: String, required: true },

@@ -1,6 +1,7 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 import { del, get, set } from 'idb-keyval';
+import type { JournalEntryInput, JournalType } from '@buzzprep/shared';
 import { api, ApiError } from './client';
 
 export const queryClient = new QueryClient({
@@ -50,6 +51,26 @@ queryClient.setMutationDefaults(['occurrence', 'update'], {
     api(`/v1/occurrences/${activityId}/${date}`, { method: 'PATCH', body }),
   onSettled: () => invalidateSchedule(),
 });
+
+export interface JournalSaveVars {
+  type: JournalType;
+  date: string;
+  body: JournalEntryInput;
+}
+
+// Journal saves made offline wait and are sent when the app is back online (even after a restart).
+queryClient.setMutationDefaults(['journal', 'save'], {
+  mutationFn: ({ type, date, body }: JournalSaveVars) =>
+    api(`/v1/journal/entries/${type}/${date}`, { method: 'PUT', body }),
+  onSettled: () => invalidateJournal(),
+});
+
+export function invalidateJournal() {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['journal'] }),
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
+  ]);
+}
 
 export function invalidateSchedule() {
   return Promise.all([

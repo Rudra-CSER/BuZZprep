@@ -56,10 +56,10 @@ curl -X POST https://prep.example.com/api/v1/auth/login \
 
 ### Meta
 
-| Method | Path          | Description                                                                                                                                              |
-| ------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GET    | `/api/health` | `200 { status: "ok", db: "connected" }`, or `503` when the database is down. Used by Docker.                                                             |
-| GET    | `/api/meta`   | Instance info before sign-in: `{ name, version, registrationMode, pushEnabled, setupRequired }`. `setupRequired` is true until the first account exists. |
+| Method | Path          | Description                                                                                                                                                                                                                                            |
+| ------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/api/health` | `200 { status: "ok", db: "connected" }`, or `503` when the database is down. Used by Docker.                                                                                                                                                           |
+| GET    | `/api/meta`   | Instance info before sign-in: `{ name, version, registrationMode, pushEnabled, setupRequired, journalAi }`. `setupRequired` is true until the first account exists. `journalAi` is `{ transcription, notes }`: booleans only, never providers or keys. |
 
 ### Auth and account
 
@@ -161,6 +161,32 @@ curl -X POST https://prep.example.com/api/v1/auth/login \
 | ------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | GET    | `/dashboard` | Everything the home screen needs in one call: greeting, plan progress, today's sessions, what needs a decision, next session, next reminder, last 7 days, DSA and system design progress, journal status, device status. |
 
+### Journal
+
+Private to the signed-in user; nobody else can read an entry, admins included. The night journal is the `evening` entry. AI features return `503` when the server has no provider, `409 ai_off` when you turned AI off in the journal settings, and `429` after `AI_DAILY_LIMIT` AI requests in 24 hours.
+
+| Method | Path                                                 | Description                                                                                                                                                                                                                        |
+| ------ | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/journal/settings`                                  | `{ prefs, ai }`: your journal preferences, and which AI features the server offers with provider and model names (never keys). The first call saves the defaults and moves the night reminder to `windDownMinutes` before bedtime. |
+| PATCH  | `/journal/settings`                                  | Any of `{ windDownMinutes, nightReminder, useAi, keepAudio, weeklySummary: { auto, weekday, time } }`. Changing the timing updates the night reminder.                                                                             |
+| GET    | `/journal/tonight?date=`                             | Tonight's session for the logical day that is ending (or `date`, not in the future): `bedtime`, `opensAt`, the day's study sessions, the closing prompts, the entry if started, and whether voice and notes are available.         |
+| GET    | `/journal/entries?from=&to=&type=`                   | Entry summaries for a date range (at most 400 days).                                                                                                                                                                               |
+| GET    | `/journal/search?q=`                                 | Case-insensitive search over notes, logs, answers and transcripts. Up to 50 results, each with a matching snippet.                                                                                                                 |
+| GET    | `/journal/export?format=markdown\|json&from=&to=`    | Download the journal as Markdown (default) or JSON.                                                                                                                                                                                |
+| GET    | `/journal/entries/:type/:date`                       | One entry, or `{ entry: null }`.                                                                                                                                                                                                   |
+| PUT    | `/journal/entries/:type/:date`                       | Create or update: `{ mood, energy, body, answers: [{ key, answer }], notes, tags, completed }`. Notes you send are marked as yours and are never overwritten by generated ones. `completed: true` queues notes if the log changed. |
+| DELETE | `/journal/entries/:type/:date`                       | Delete the entry with its recordings and any pending AI work.                                                                                                                                                                      |
+| POST   | `/journal/entries/evening/:date/clips?duration=`     | A recording as the raw request body (`Content-Type: audio/webm`, `audio/mp4`, `audio/ogg`, `audio/mpeg`, `audio/wav`…), up to 25 MB. Stored, then transcribed in the background. `201 { entry }`.                                  |
+| DELETE | `/journal/entries/evening/:date/clips/:clipId`       | Delete a recording and its transcript.                                                                                                                                                                                             |
+| POST   | `/journal/entries/evening/:date/clips/:clipId/retry` | Transcribe a failed recording again, for example after fixing an API key. Its audio is kept until this succeeds. `202 { entry }`.                                                                                                  |
+| GET    | `/journal/entries/evening/:date/clips/:clipId/audio` | The audio, if you keep recordings (by default it is deleted once transcribed).                                                                                                                                                     |
+| POST   | `/journal/entries/evening/:date/notes`               | Write the notes again from the log, replacing your edits. `202 { entry }`.                                                                                                                                                         |
+| GET    | `/journal/weeks/:date`                               | The week containing `date`: each day, the compiled revision sheet, study-session counts, and the AI summary with its status.                                                                                                       |
+| POST   | `/journal/weeks/:date/summary`                       | Write the week's summary in the background. `202`.                                                                                                                                                                                 |
+| GET    | `/journal/weeks/:date/export`                        | The week as Markdown.                                                                                                                                                                                                              |
+
+While a clip is `uploaded` or `transcribing`, or `notesStatus` is `queued` or `running`, the entry changes by itself; the app fetches it again every few seconds until it settles.
+
 ## Coming in the next phases
 
-Learning (tracks, topics, problems, revision queue, study sessions), journal, habits and career endpoints. Their data models already exist (see [DATA_MODEL.md](DATA_MODEL.md)) and are filled by the setup wizard; the endpoints and screens are listed in [ROADMAP.md](ROADMAP.md).
+Learning (tracks, topics, problems, revision queue, study sessions), habits and career endpoints. Their data models already exist (see [DATA_MODEL.md](DATA_MODEL.md)) and are filled by the setup wizard; the endpoints and screens are listed in [ROADMAP.md](ROADMAP.md).

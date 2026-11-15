@@ -2,14 +2,19 @@ import cookieParser from 'cookie-parser';
 import express, { type Express } from 'express';
 import { pinoHttp } from 'pino-http';
 import type { AppContext } from './context';
+import { createAiService } from './modules/ai/ai.service';
 import { logger } from './lib/logger';
 import { errorHandler } from './middleware/error-handler';
 import { securityHeaders } from './middleware/security-headers';
 import { createApiRouter } from './routes';
 import { serveWebApp } from './web';
 
-/** The Express application: security headers, request logging, the API and the PWA. */
-export function createApp(ctx: AppContext): Express {
+/**
+ * The Express application: security headers, request logging, the API and the PWA.
+ * `ai` defaults to the providers configured in the environment (tests may pass fakes).
+ */
+export function createApp(input: Omit<AppContext, 'ai'> & { ai?: AppContext['ai'] }): Express {
+  const ctx: AppContext = { ...input, ai: input.ai ?? createAiService(input.env) };
   const { env } = ctx;
   const app = express();
   app.disable('x-powered-by');

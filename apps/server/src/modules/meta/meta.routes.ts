@@ -6,7 +6,7 @@ import { isSetupRequired } from '../auth/auth.service';
 export const APP_VERSION = '0.1.0';
 
 /** /api/health and /api/meta — public, unversioned. */
-export function metaRouter({ env, notifications }: AppContext): Router {
+export function metaRouter({ env, notifications, ai }: AppContext): Router {
   const r = Router();
 
   r.get('/health', (_req, res) => {
@@ -25,6 +25,8 @@ export function metaRouter({ env, notifications }: AppContext): Router {
       version: APP_VERSION,
       registrationMode: env.REGISTRATION_MODE,
       pushEnabled: notifications.pushEnabled,
+      // Which journal AI features exist (booleans only: no providers, models or keys).
+      journalAi: ai.availability,
       setupRequired: databaseState() === 'connected' ? await isSetupRequired() : false,
     });
   });

@@ -55,6 +55,17 @@
   /* What content must clear at the top; the app shell lowers it when its top bar already does. */
   --app-top: var(--safe-top);
 
+  /*
+   * Night: the journal's wind-down screen, the same in both themes. Deep ink with warm,
+   * low-glare text and a muted candle-amber accent instead of the daytime indigo.
+   */
+  --night: oklch(0.165 0.03 276);
+  --night-raised: oklch(0.215 0.032 276);
+  --night-line: oklch(1 0 0 / 0.09);
+  --night-text: oklch(0.93 0.018 85);
+  --night-muted: oklch(0.72 0.022 275);
+  --night-glow: oklch(0.82 0.11 76);
+
   --cat-dsa: oklch(0.56 0.19 300);
   --cat-system_design: oklch(0.6 0.13 232);
   --cat-cs_fundamentals: oklch(0.58 0.1 190);
@@ -137,6 +148,12 @@
   --color-chrome-muted: var(--chrome-muted);
   --color-chrome-line: var(--chrome-line);
   --color-chrome-accent: var(--chrome-accent);
+  --color-night: var(--night);
+  --color-night-raised: var(--night-raised);
+  --color-night-line: var(--night-line);
+  --color-night-text: var(--night-text);
+  --color-night-muted: var(--night-muted);
+  --color-night-glow: var(--night-glow);
 
   --font-sans:
     'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -231,6 +248,30 @@
  * A navigation surface (top bar, rail, sidebar). Inside it, the accent and quiet text switch to
  * versions that read on the dark ink.
  */
+/* Night surfaces: components inside pick up the night palette through the overridden tokens. */
+@utility night {
+  background-color: var(--night);
+  color: var(--night-text);
+  color-scheme: dark;
+  --background: var(--night);
+  --foreground: var(--night-text);
+  --card: var(--night-raised);
+  --card-foreground: var(--night-text);
+  --popover: var(--night-raised);
+  --popover-foreground: var(--night-text);
+  --primary: var(--night-glow);
+  --primary-foreground: var(--night);
+  --secondary: oklch(1 0 0 / 0.07);
+  --secondary-foreground: var(--night-text);
+  --muted: oklch(1 0 0 / 0.06);
+  --muted-foreground: var(--night-muted);
+  --accent: oklch(0.82 0.11 76 / 0.14);
+  --accent-foreground: var(--night-glow);
+  --border: var(--night-line);
+  --input: oklch(1 0 0 / 0.15);
+  --ring: var(--night-glow);
+}
+
 @utility chrome {
   background-color: var(--chrome);
   color: var(--chrome-foreground);

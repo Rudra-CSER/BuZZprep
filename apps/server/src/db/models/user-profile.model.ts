@@ -1,4 +1,10 @@
-import type { ModeRules, OnboardingAnswers, ProfileInput, ThemePreference } from '@buzzprep/shared';
+import type {
+  JournalPrefs,
+  ModeRules,
+  OnboardingAnswers,
+  ProfileInput,
+  ThemePreference,
+} from '@buzzprep/shared';
 import { Schema, model, type Types } from 'mongoose';
 
 /** Person-level settings. Journey-level data (goal, deadline) lives on Plan. */
@@ -9,6 +15,8 @@ export interface IUserProfile extends Omit<ProfileInput, 'theme'> {
   /** Optional per-user overrides of the default schedule-mode rules. */
   modeRules: Partial<ModeRules> | null;
   onboardingAnswers: OnboardingAnswers | null;
+  /** Journal preferences; null until changed (read through resolveJournalPrefs). */
+  journal: Partial<JournalPrefs> | null;
   onboardingCompletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -36,6 +44,7 @@ const profileSchema = new Schema<IUserProfile>(
     theme: { type: String, enum: ['system', 'light', 'dark'], default: 'system' },
     modeRules: { ...mixed, default: null },
     onboardingAnswers: { ...mixed, default: null },
+    journal: { ...mixed, default: null },
     onboardingCompletedAt: { type: Date, default: null },
   },
   { timestamps: true, minimize: false },

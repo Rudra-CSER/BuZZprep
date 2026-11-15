@@ -6,6 +6,7 @@ import { toApi } from '../../lib/serialize';
 import { publicUser } from '../auth/auth.service';
 import { hashPassword, verifyPassword } from '../auth/password';
 import { deleteOtherSessions } from '../auth/session';
+import { deleteUserAudio } from '../journal/recordings.service';
 
 export async function updateAccount(userId: Types.ObjectId, input: UpdateAccountInput) {
   const user = await User.findByIdAndUpdate(
@@ -66,5 +67,6 @@ export async function deleteAccount(userId: Types.ObjectId, password: string): P
   for (const model of Object.values(USER_OWNED_MODELS)) {
     await model.deleteMany({ userId });
   }
+  await deleteUserAudio(userId);
   await User.deleteOne({ _id: userId });
 }

@@ -6,3 +6,4 @@ export * from './schedule';
 export * from './push';
 export * from './bundle';
 export * from './onboarding';
+export * from './journal';

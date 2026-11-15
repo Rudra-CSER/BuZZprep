@@ -33,6 +33,33 @@ const envSchema = z
     LOG_LEVEL: z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .default('info'),
+
+    // ── Journal AI (optional) ──────────────────────────────────────────────────
+    // Keys are read only here, on the server. Nothing below is ever sent to the browser.
+    /** One key for whichever provider it belongs to (by prefix); see the AI registry. */
+    LLM_MODEL_API_KEY: z.string().optional(),
+    LLM_API_KEY: z.string().optional(),
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_BASE_URL: z.url().default('https://api.openai.com/v1'),
+    ANTHROPIC_API_KEY: z.string().optional(),
+    ANTHROPIC_BASE_URL: z.url().default('https://api.anthropic.com'),
+    GROQ_API_KEY: z.string().optional(),
+    GROQ_BASE_URL: z.url().default('https://api.groq.com/openai/v1'),
+    /**
+     * Speech-to-text for voice journals: a provider id from the AI registry, "none", or
+     * "auto" (the first provider whose key is set).
+     */
+    AI_TRANSCRIBE_PROVIDER: z.string().default('auto'),
+    AI_TRANSCRIBE_MODEL: z.string().optional(),
+    /** Notes and weekly summaries: a provider id, "none", or "auto". */
+    AI_NOTES_PROVIDER: z.string().default('auto'),
+    AI_NOTES_MODEL: z.string().optional(),
+    AI_REQUEST_TIMEOUT_SECONDS: z.coerce.number().int().min(10).max(600).default(120),
+    /** AI jobs (transcriptions, notes, summaries) one user can start per day. */
+    AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(1000).default(40),
+    /** Used only by the local providers, which are commented out in the AI registry. */
+    LOCAL_WHISPER_BASE_URL: z.url().optional(),
+    OLLAMA_BASE_URL: z.url().optional(),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production') {

@@ -8,5 +8,6 @@ export * from './schedule';
 export * from './reminders';
 export * from './learning';
 export * from './habits';
+export * from './journal';
 export * from './schemas';
 export * from './templates';

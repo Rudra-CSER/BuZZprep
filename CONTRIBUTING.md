@@ -40,6 +40,7 @@ npm run dev         # no .env needed locally; see docs/DEPLOYMENT.md#local-devel
 | Data loading or a change from the web app                   | A hook or request function in that feature's `api.ts`                                                                                   |
 | A piece used by one screen                                  | That feature's `components/` or `hooks/`                                                                                                |
 | A reusable control                                          | `apps/web/src/components/ui/<name>.tsx`                                                                                                 |
+| An AI provider (speech-to-text or notes)                    | A file in `apps/server/src/modules/ai/providers/` and an entry in `registry.ts` there                                                   |
 
 Routes that import Mongoose, and shared web code that imports a feature, fail `npm run lint`.
 
@@ -52,7 +53,6 @@ npm run format:check   # npm run format fixes it
 npm run typecheck
 npm run lint
 npm test
-MONGODB_TEST_URI=mongodb://127.0.0.1:27017/buzzprep_test npm test -w @buzzprep/server
 npm run build
 ```
 

@@ -48,6 +48,8 @@ export interface MetaResponse {
   pushEnabled: boolean;
   /** No accounts exist yet: the next sign-up creates the server's owner (admin) account. */
   setupRequired?: boolean;
+  /** Journal AI features this server offers. */
+  journalAi?: { transcription: boolean; notes: boolean };
 }
 
 export interface Profile extends ProfileInput {
@@ -125,7 +127,7 @@ export interface DashboardResponse {
     practiceCompleted: number;
     dueRevisions: number;
   };
-  journal: { morning: boolean; evening: boolean };
+  journal: { morning: boolean; evening: boolean; eveningDone: boolean };
   push: { serverEnabled: boolean; devices: number };
 }
 

@@ -2,17 +2,17 @@
 
 buZZprep is built in phases. Each phase ends with a report: what's done, what's pending, which tests ran, and the technical debt it leaves. Major architectural changes wait for the maintainer's approval.
 
-| Phase | Scope                                                                                       | Status                                                                          |
-| ----- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| 1     | Architecture, repository structure, data model, API design, PWA/iOS feasibility, wireframes | Done                                                                            |
-| 2     | UI foundation: design system, app shell, auth, setup wizard, PWA install                    | Done                                                                            |
-| 3     | Scheduling engine: routines, day/week/month, day modes, missed sessions, free slots         | Done                                                                            |
-| 4     | Notifications: rules, server scheduler, Web Push, device management                         | Done; **real-iPhone verification pending**                                      |
-| 5     | Learning: DSA log, spaced revision, system design, CS fundamentals                          | Next. Data model, templates and seed data exist; screens and endpoints to build |
-| 6     | Journal: morning, evening, weekly; mood, energy, tags; search; Markdown/JSON export         | Planned. Data model exists                                                      |
-| 7     | Habits: consistency without shaming, comebacks                                              | Planned. Engine (`habits.ts`) and data model exist                              |
-| 8     | Career dashboard: companies, stages, interviews, referrals                                  | Planned. Data model exists; seeded from your target companies                   |
-| 9     | Production readiness: E2E tests, accessibility audit, observability, calendar feed          | Partly done (Docker, CI, docs, backups)                                         |
+| Phase | Scope                                                                                       | Status                                                                                     |
+| ----- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1     | Architecture, repository structure, data model, API design, PWA/iOS feasibility, wireframes | Done                                                                                       |
+| 2     | UI foundation: design system, app shell, auth, setup wizard, PWA install                    | Done                                                                                       |
+| 3     | Scheduling engine: routines, day/week/month, day modes, missed sessions, free slots         | Done                                                                                       |
+| 4     | Notifications: rules, server scheduler, Web Push, device management                         | Done; **real-iPhone verification pending**                                                 |
+| 5     | Learning: DSA log, spaced revision, system design, CS fundamentals                          | Next. Data model, templates and seed data exist; screens and endpoints to build            |
+| 6     | Journal: night journal (voice or typed), AI notes, week review, search, export              | Done (night journal); **microphone on a real iPhone to verify**; morning/free entries next |
+| 7     | Habits: consistency without shaming, comebacks                                              | Planned. Engine (`habits.ts`) and data model exist                                         |
+| 8     | Career dashboard: companies, stages, interviews, referrals                                  | Planned. Data model exists; seeded from your target companies                              |
+| 9     | Production readiness: E2E tests, accessibility audit, observability, calendar feed          | Partly done (Docker, CI, docs, backups)                                                    |
 
 ## Phase report: phases 1–4
 
@@ -60,7 +60,6 @@ buZZprep is built in phases. Each phase ends with a report: what's done, what's 
 
 - **Phase 4 verification on a real iPhone** using the [test plan](NOTIFICATIONS.md#real-device-test-plan-iphone). Background notifications on iOS must not be described as working until this passes.
 - Learn tab: tracks, topics, problem log (independent / hints / editorial / unsolved), revision queue, study sessions linked to schedule sessions. Today it shows a placeholder.
-- Journal tab: guided morning/evening/weekly entries, mood and energy, tags, full-text search, Markdown and JSON export. Today it shows a placeholder.
 - Habits and career screens.
 - Signed-in devices list (sessions are already recorded).
 - Calendar feed (iCalendar with alarms) as a reliable alternative for time-critical reminders on iOS.
@@ -94,6 +93,35 @@ buZZprep is built in phases. Each phase ends with a report: what's done, what's 
 - **D1: MongoDB outbox + in-process scheduler instead of BullMQ/Redis.** Rationale and costs in [ARCHITECTURE.md](ARCHITECTURE.md#d1-mongodb-outbox--in-process-scheduler-instead-of-bullmq-and-redis--needs-approval).
 - **D2: TanStack Query for server state**, alongside Zustand for UI state. See [ARCHITECTURE.md](ARCHITECTURE.md#d2-tanstack-query-for-server-state--needs-approval).
 
+## Phase report: phase 6 (journal)
+
+### Completed
+
+- **Tonight's journal**, a calm full-screen wind-down in four steps (how the day felt, the study log, closing the day, goodnight), opened from a reminder 5–30 minutes before your bedtime instead of the last scroll of the day. The reminder follows the sleep block, including the gradual bedtime shift, and stays quiet once the night is finished.
+- **Voice or typing.** Recordings are saved on the device first (IndexedDB) and uploaded when online, so a dropped connection or a closed app loses nothing; a recording cut off by the app closing is recovered on the next visit. The screen stays awake while recording; iOS stops the microphone when the screen locks, and the clip is saved at that point.
+- **AI notes** (optional): speech-to-text, then concise revision notes (topics with key points and confidence, problems with how they went, mistakes, open questions, what to revise). Generated in the background, editable, never overwriting your own edits, and never re-generated for an unchanged log.
+- **Week review**: every week's notes compiled into a revision sheet without any AI, plus an optional AI review with a weekend revision plan, on request or automatically on a chosen day and time (one notification when ready).
+- Journal tab with this week, all nights and search; entry pages; settings; Markdown and JSON export. Account export and deletion cover the journal, AI jobs and recordings.
+- Providers: OpenAI (`gpt-transcribe`), Anthropic (`claude-sonnet-5-5`) and Groq (`whisper-large-v3`, `openai/gpt-oss-120b`) active, chosen automatically by which key is set; a local Whisper server and Ollama prepared but commented out (`apps/server/src/modules/ai/providers/registry.ts`).
+- Failed recordings keep their audio and can be transcribed again with **Try again**.
+
+### Pending
+
+- Verify recording on a real iPhone (Home Screen app, HTTPS): permission prompt, screen-lock behaviour, upload after reconnecting.
+- Morning intentions and free-form entries have API support but no screens yet.
+- Tags in the UI.
+
+### Tests run
+
+| Suite                        | Result                                                                                                                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/shared` unit tests | 78 passed, including note normalisation of untrusted model output, journal preferences, the weekly revision sheet, Markdown export, the night window and the journal reminder   |
+| `apps/server` unit tests     | 28 passed, including AI configuration, the three providers against a mocked API (requests, errors, key never leaked), strict output schemas and prompts                         |
+| Journal integration tests    | 9 written (settings and reminder sync, tonight, typed and voice logs end to end with fake providers, privacy, week summary, export, account deletion). Need `MONGODB_TEST_URI`. |
+| `apps/web` unit tests        | 12 passed                                                                                                                                                                       |
+| Type checking, lint, build   | Clean                                                                                                                                                                           |
+| UI review                    | Journal screens at iPhone, iPad and laptop sizes, light and dark, against a mock API                                                                                            |
+
 ## Next phases in detail
 
 ### Phase 5: Learning
@@ -104,11 +132,9 @@ buZZprep is built in phases. Each phase ends with a report: what's done, what's 
 - Study sessions recorded from the focus timer and linked to schedule sessions; time per track per week.
 - Endpoints: `/tracks`, `/topics/:id`, `/problems`, `/problems/:id/attempts`, `/revision/queue`, `/study-sessions`.
 
-### Phase 6: Journal
+### Phase 6 follow-ups: Journal
 
-- Morning (intention, top three, energy), evening (what went well, what got in the way, tomorrow) and weekly review prompts, plus free-form entries.
-- Mood, energy, tags; full-text search; filters by type and date.
-- Export to Markdown and JSON. Entries are only ever visible to their author.
+- Morning intentions and free-form entries in the app (the API already supports them), tags.
 
 ### Phase 7: Habits
 

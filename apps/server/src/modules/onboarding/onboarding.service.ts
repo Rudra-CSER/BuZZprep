@@ -5,6 +5,7 @@ import {
   isValidZone,
   logicalDateOf,
   onboardingAnswersSchema,
+  resolveJournalPrefs,
   summarizeWeek,
   TEMPLATE_KEYS,
   TEMPLATES,
@@ -14,6 +15,7 @@ import type { Types } from 'mongoose';
 import { UserProfile } from '../../db/models';
 import { badRequest, notFound } from '../../lib/errors';
 import { importBundle } from '../config/config-import.service';
+import { syncNightReminder } from '../journal/journal-settings.service';
 import { getProfile, todayFor } from '../profile/profile.service';
 
 /** Template catalog for step 1 of the setup wizard (without the topic lists). */
@@ -70,6 +72,7 @@ export async function completeOnboarding(userId: Types.ObjectId, rawAnswers: unk
     { userId },
     { $set: { onboardingAnswers: answers, onboardingCompletedAt: new Date() } },
   );
+  await keepJournalReminderTiming(userId);
   return { summary, week: summarizeWeek(bundle) };
 }
 
@@ -92,7 +95,7 @@ export async function resetToDefaultSchedule(userId: Types.ObjectId) {
   }
   const bundle = generateBundle(onboardingAnswersSchema.parse(profile.onboardingAnswers));
   bundle.schedule!.name = `Default (reset ${todayFor(profile)})`;
-  return importBundle(
+  const result = await importBundle(
     userId,
     {
       ...bundle,
@@ -104,4 +107,12 @@ export async function resetToDefaultSchedule(userId: Types.ObjectId) {
     },
     'replace',
   );
+  await keepJournalReminderTiming(userId);
+  return result;
+}
+
+/** A regenerated routine gets the default journal reminder; re-apply the user's own timing. */
+async function keepJournalReminderTiming(userId: Types.ObjectId) {
+  const profile = await getProfile(userId);
+  if (profile.journal) await syncNightReminder(userId, resolveJournalPrefs(profile.journal));
 }

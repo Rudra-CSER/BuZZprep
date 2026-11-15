@@ -110,8 +110,8 @@ describe('generateBundle — working professional, evening study', () => {
       (p) => `${formatTimeLabel(localTimeOf(p.fireAt, IST.zone))} ${p.title}`,
     );
     expect(times).toEqual([
-      '1:45 AM Evening reflection',
       '2:00 AM Prepare for sleep',
+      '2:20 AM Tonight’s journal',
       '2:30 AM Target bedtime',
     ]);
   });
@@ -159,8 +159,8 @@ describe('generateBundle — working professional, evening study', () => {
       '9:30 PM upcoming',
       '9:35 PM missed_digest',
       '9:50 PM overdue',
-      '12:30 AM journal',
       '12:45 AM sleep',
+      '1:05 AM journal',
       '1:15 AM sleep',
     ]);
   });

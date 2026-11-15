@@ -76,7 +76,7 @@ export async function getDashboard(userId: Types.ObjectId, pushEnabled: boolean)
       DSAProblem.countDocuments({ userId, 'revision.dueDate': { $ne: null, $lte: today } }),
       systemDesignProgress(userId, today),
       JournalEntry.find({ userId, date: today, type: { $in: ['morning', 'evening'] } })
-        .select({ type: 1 })
+        .select({ type: 1, completedAt: 1 })
         .lean(),
       PushSubscriptionModel.countDocuments({ userId }),
     ]);
@@ -106,6 +106,7 @@ export async function getDashboard(userId: Types.ObjectId, pushEnabled: boolean)
     journal: {
       morning: journal.some((j) => j.type === 'morning'),
       evening: journal.some((j) => j.type === 'evening'),
+      eveningDone: journal.some((j) => j.type === 'evening' && j.completedAt),
     },
     push: { serverEnabled: pushEnabled, devices: deviceCount },
   };

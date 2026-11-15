@@ -1,5 +1,6 @@
 import type { Model } from 'mongoose';
 import { Activity } from './activity.model';
+import { AiJob } from './ai-job.model';
 import { ActivityOccurrence } from './activity-occurrence.model';
 import { CareerApplication } from './career-application.model';
 import { DayPlan } from './day-plan.model';
@@ -46,10 +47,13 @@ export * from './weekly-review.model';
 export * from './habit.model';
 export * from './habit-completion.model';
 export * from './career-application.model';
+// Background work
+export * from './ai-job.model';
 
 /**
  * Every collection that holds per-user data, keyed by its export name.
  * Used by account export and account deletion — add new user-owned models here.
+ * (Voice recordings live in GridFS, not in a model; account deletion removes them separately.)
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous model map
 export const USER_OWNED_MODELS: Record<string, Model<any>> = {
@@ -68,6 +72,7 @@ export const USER_OWNED_MODELS: Record<string, Model<any>> = {
   notifications: Notification,
   journal: JournalEntry,
   weeklyReviews: WeeklyReview,
+  aiJobs: AiJob,
   habits: Habit,
   habitCompletions: HabitCompletion,
   applications: CareerApplication,

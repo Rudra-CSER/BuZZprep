@@ -50,6 +50,18 @@ export const router = createBrowserRouter([
             lazy: lazy(() => import('@/features/journal/JournalPage'), 'JournalPage'),
           },
           {
+            path: 'journal/tonight',
+            lazy: lazy(() => import('@/features/journal/TonightPage'), 'TonightPage'),
+          },
+          {
+            path: 'journal/week/:date',
+            lazy: lazy(() => import('@/features/journal/WeekPage'), 'WeekPage'),
+          },
+          {
+            path: 'journal/:date',
+            lazy: lazy(() => import('@/features/journal/EntryPage'), 'EntryPage'),
+          },
+          {
             path: 'profile',
             lazy: lazy(() => import('@/features/profile/ProfilePage'), 'ProfilePage'),
           },

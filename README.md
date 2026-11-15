@@ -8,7 +8,7 @@ A self-hosted app for preparing for technical interviews around a full-time job:
   <img src="docs/screenshots/mobile-setup-plan.png" width="250" alt="Setup wizard: the generated plan">
 </p>
 
-> **Status: early.** Scheduling, reminders, setup and the app shell are built (phases 1–4). Learn, Journal, Habits and Career are next. Web Push on iPhone is implemented to Apple's specification but **has not yet been verified on a physical device**; see [the test plan](docs/NOTIFICATIONS.md#real-device-test-plan-iphone).
+> **Status: early.** Scheduling, reminders, setup, the app shell and the night journal are built. Learn, Habits and Career are next. Web Push on iPhone is implemented to Apple's specification but **has not yet been verified on a physical device**; see [the test plan](docs/NOTIFICATIONS.md#real-device-test-plan-iphone).
 
 ## What it does
 
@@ -17,9 +17,10 @@ A self-hosted app for preparing for technical interviews around a full-time job:
 - **Adapts when life happens.** Mark a day as busy, low-energy or recovery and study blocks shrink or become optional, while work and sleep stay put. Missed sessions are never silently marked done: they wait for your decision, with free slots suggested.
 - **Moves your sleep gradually.** Shift bedtime 15 minutes earlier every few days until you reach your target, without touching your wake-up time.
 - **Reminds you at the right moment.** Reminders before sessions, when they start, if they weren't done, plus planning, journal, wind-down, bedtime, wake-up, weekly review and milestones, with quiet hours. Reminders are planned and sent by your server, not by a timer in the browser, so they don't depend on the app being open. (On iPhone this still needs verification on a real device.)
+- **Ends the day with a journal, not a scroll.** A few minutes before bed, a reminder opens a quiet night screen: say (or type) what you studied, topic by topic. With an AI provider set up on your server, it becomes short revision notes, and each week's notes become a revision sheet and a weekend plan. Without one, everything except voice and generated notes still works.
 - **Respects your privacy.** No public profiles, no analytics, no third-party scripts. Export everything or delete your account at any time.
 
-Coming next: a DSA problem log that separates "solved on my own" from "solved with help", spaced revision (1, 3, 7, 14, 30 days), system design and CS fundamentals tracking, a private journal, habits without guilt, and a career pipeline. See the [roadmap](docs/ROADMAP.md).
+Coming next: a DSA problem log that separates "solved on my own" from "solved with help", spaced revision (1, 3, 7, 14, 30 days), system design and CS fundamentals tracking, habits without guilt, and a career pipeline. See the [roadmap](docs/ROADMAP.md).
 
 ## Getting started
 

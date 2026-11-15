@@ -8,6 +8,7 @@ import { accountRouter } from './modules/account/account.routes';
 import { authRouter } from './modules/auth/auth.routes';
 import { configRouter } from './modules/config/config.routes';
 import { dashboardRouter } from './modules/dashboard/dashboard.routes';
+import { journalRouter } from './modules/journal/journal.routes';
 import { metaRouter } from './modules/meta/meta.routes';
 import { notificationsRouter } from './modules/notifications/notifications.routes';
 import { pushRouter } from './modules/notifications/push.routes';
@@ -48,6 +49,7 @@ export function createApiRouter(ctx: AppContext): Router {
   api.use('/v1/config', configRouter(ctx));
   api.use('/v1/plans', plansRouter(ctx));
   api.use('/v1/dashboard', dashboardRouter(ctx));
+  api.use('/v1/journal', journalRouter(ctx));
 
   // Schedule
   api.use('/v1/schedules', schedulesRouter(ctx));

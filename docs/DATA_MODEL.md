@@ -59,21 +59,22 @@ erDiagram
 
 Person-level settings. Everything the setup wizard asks lives here or on the plan, never in code.
 
-| Field                                        | Notes                                                                                                             |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `timezone`                                   | IANA name, e.g. `Asia/Kolkata`.                                                                                   |
-| `dayBoundaryMinutes`                         | When a new day starts, in minutes after midnight. Default 240 (04:00).                                            |
-| `weekStartsOn`                               | 1 (Monday) or 7 (Sunday).                                                                                         |
-| `professional`, `education`                  | Optional free-form details (designation, organisation, degree, grade…).                                           |
-| `work`, `sleep`, `study`, `fitness`          | Working days and hours, commute, pressure; current and target sleep; study minutes; gym.                          |
-| `restDays`                                   | Weekdays treated as rest days for habits.                                                                         |
-| `skills`                                     | Self-assessed levels per area and notes.                                                                          |
-| `notifications`                              | Reminder preferences: master switch, quiet hours, kinds on/off, muted categories, snooze length, 12/24-hour time. |
-| `revisionIntervals`                          | Spaced-revision intervals in days. Default `[1, 3, 7, 14, 30]`.                                                   |
-| `missedGraceMinutes`                         | How long after a session ends before it needs a decision. Default 30.                                             |
-| `theme`                                      | `system`, `light` or `dark`.                                                                                      |
-| `modeRules`                                  | Optional per-user overrides of what busy / low-energy / recovery days do.                                         |
-| `onboardingAnswers`, `onboardingCompletedAt` | The setup wizard's answers, kept so "Reset to default schedule" can regenerate the plan.                          |
+| Field                                        | Notes                                                                                                                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `timezone`                                   | IANA name, e.g. `Asia/Kolkata`.                                                                                                                                       |
+| `dayBoundaryMinutes`                         | When a new day starts, in minutes after midnight. Default 240 (04:00).                                                                                                |
+| `weekStartsOn`                               | 1 (Monday) or 7 (Sunday).                                                                                                                                             |
+| `professional`, `education`                  | Optional free-form details (designation, organisation, degree, grade…).                                                                                               |
+| `work`, `sleep`, `study`, `fitness`          | Working days and hours, commute, pressure; current and target sleep; study minutes; gym.                                                                              |
+| `restDays`                                   | Weekdays treated as rest days for habits.                                                                                                                             |
+| `skills`                                     | Self-assessed levels per area and notes.                                                                                                                              |
+| `notifications`                              | Reminder preferences: master switch, quiet hours, kinds on/off, muted categories, snooze length, 12/24-hour time.                                                     |
+| `revisionIntervals`                          | Spaced-revision intervals in days. Default `[1, 3, 7, 14, 30]`.                                                                                                       |
+| `missedGraceMinutes`                         | How long after a session ends before it needs a decision. Default 30.                                                                                                 |
+| `theme`                                      | `system`, `light` or `dark`.                                                                                                                                          |
+| `modeRules`                                  | Optional per-user overrides of what busy / low-energy / recovery days do.                                                                                             |
+| `onboardingAnswers`, `onboardingCompletedAt` | The setup wizard's answers, kept so "Reset to default schedule" can regenerate the plan.                                                                              |
+| `journal`                                    | Journal settings: minutes before bed for the night journal, its reminder, AI on/off, keep recordings, automatic weekly summary (day and time). Null until first used. |
 
 ### `plans`
 
@@ -202,20 +203,33 @@ Time actually spent: `{ trackId, topicId, activityId, occurrenceDate, startedAt,
 
 ### `journalentries`
 
-Private to their author. Never included in anything shared.
+Private to their author. Never included in anything shared. The night journal is the `evening` entry.
 
-| Field                    | Notes                                                                                                                       |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| `type`, `date`           | `morning`, `evening`, `weekly`, `freeform`. One morning/evening/weekly entry per day (unique partial index).                |
-| `title`, `body`          |                                                                                                                             |
-| `answers[]`              | `{ key, question, answer }` for guided prompts. The question text is stored so old entries stay readable if prompts change. |
-| `mood`, `energy`, `tags` |                                                                                                                             |
+| Field                                                                         | Notes                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`, `date`                                                                | `morning`, `evening`, `weekly`, `freeform`. One morning/evening/weekly entry per day (unique partial index). `date` is the logical date.                                                                                                       |
+| `title`, `body`                                                               | `body` holds the typed log.                                                                                                                                                                                                                    |
+| `answers[]`                                                                   | `{ key, question, answer }` for guided prompts. The question text is stored so old entries stay readable if prompts change.                                                                                                                    |
+| `mood`, `energy`, `tags`                                                      |                                                                                                                                                                                                                                                |
+| `clips[]`                                                                     | Voice recordings: `{ fileId, mimeType, bytes, durationSeconds, status, transcript, error }`. `status`: `uploaded → transcribing → transcribed` or `failed`. `fileId` points to the audio in GridFS and becomes null when the audio is deleted. |
+| `notes`                                                                       | Revision notes: `{ summary, topics[{ name, keyPoints[], confidence }], problems[{ name, outcome, note }], mistakes[], questions[], reviseNext[] }`.                                                                                            |
+| `notesSource`                                                                 | `ai` (written from the log) or `manual` (written or edited by you; never overwritten by generated notes).                                                                                                                                      |
+| `notesStatus`, `notesError`, `notesModel`, `notesUpdatedAt`, `notesInputHash` | Progress of generated notes, and a hash of the log they were written from, so an unchanged log is never sent twice.                                                                                                                            |
+| `completedAt`                                                                 | When the night was finished. A finished night silences its reminder.                                                                                                                                                                           |
 
-A text index on title, body, answers and tags powers search.
+Search matches notes, logs, answers and transcripts case-insensitively, always within one user's entries.
 
 ### `weeklyreviews`
 
-`{ weekStart, stats, journalEntryId, focusNextWeek[] }`, unique per user and week.
+`{ weekStart, stats, journalEntryId, focusNextWeek[] }`, unique per user and week, plus the AI week summary: `summary { headline, wins[], topics[], weakSpots[], revisionPlan[{ topic, task, why }], nextWeek[] }`, `summaryStatus`, `summaryError`, `summaryModel`, `summaryGeneratedAt`. The revision sheet itself is compiled from the nights' notes on request and not stored.
+
+### `aijobs`
+
+Background AI work: `{ type: transcribe | notes | weekly_summary, status: queued | running | done | failed, entryId, clipId, weekStart, auto, force, attempts, runAfter, lockedUntil, error }`. Claimed atomically by the worker with a lease, retried with backoff on temporary provider errors, purged 14 days after creation (TTL index).
+
+### GridFS bucket `journal_audio`
+
+Voice recordings, with the owner and entry in each file's metadata. Deleted once transcribed unless you choose to keep recordings, and always with the entry or the account.
 
 ### `habits` and `habitcompletions`
 
@@ -235,10 +249,11 @@ Habits: `{ name, description, targetPerWeek, days[], linkedCategory, graceMisses
 
 ## Retention and deletion
 
-- Sessions expire through a TTL index; notifications are purged 30 days after their fire time.
+- Sessions expire through a TTL index; notifications are purged 30 days after their fire time; AI jobs after 14 days.
+- Voice recordings are deleted as soon as they are transcribed, unless you turned on **Keep recordings**.
 - Everything else is kept until you delete it.
 - **Export** (`GET /api/v1/account/export`) returns every per-user collection as JSON, without session tokens or device push keys.
-- **Delete account** removes the user and every document in every collection listed in `USER_OWNED_MODELS`.
+- **Delete account** removes the user and every document in every collection listed in `USER_OWNED_MODELS`, plus their recordings in GridFS.
 
 ## Backups
 

@@ -3,6 +3,7 @@ import type { Env } from '../../config/env';
 import {
   Activity,
   ActivityOccurrence,
+  JournalEntry,
   Notification,
   PushSubscriptionModel,
   type INotification,
@@ -97,6 +98,15 @@ export class OutboxDispatcher {
       if (state && state.status !== 'pending') {
         return this.finish(doc._id, 'skipped_condition', `occurrence_${state.status}`);
       }
+    }
+    if (doc.condition === 'journal_pending' && doc.occurrenceDate) {
+      const done = await JournalEntry.exists({
+        userId: doc.userId,
+        type: 'evening',
+        date: doc.occurrenceDate,
+        completedAt: { $ne: null },
+      });
+      if (done) return this.finish(doc._id, 'skipped_condition', 'journal_done');
     }
     if (doc.condition === 'missed_exists') {
       const { occurrences: missed } = await listNeedingDecision(doc.userId, now.getTime());

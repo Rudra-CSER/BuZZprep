@@ -1,4 +1,4 @@
-import { CATEGORY_META } from '../../constants';
+import { CATEGORY_META, DEFAULT_WIND_DOWN_MINUTES } from '../../constants';
 import { addMinutesToTime } from '../../time';
 import type { PlanContext } from './context';
 import type { RoutineAnchors } from './routine';
@@ -51,11 +51,11 @@ export function addReminders(
   // silenced by quiet hours: while bedtime moves from 2:30 toward 1:15, quiet hours that start
   // at 1:30 would otherwise mute exactly the reminders that drive the change.
   const bedtime = { bypassQuietHours: true };
-  b.onActivity('wind_down', 'journal', 'activity_start', {
+  // The night journal opens a few minutes before bed (instead of scrolling); its text follows
+  // the offset, which the journal settings change.
+  b.onActivity('sleep', 'journal', 'activity_start', {
     ...bedtime,
-    offsetMinutes: -15,
-    title: 'Evening reflection',
-    body: 'Two minutes: what went well, and what to change tomorrow?',
+    offsetMinutes: -DEFAULT_WIND_DOWN_MINUTES,
   });
   b.onActivity('wind_down', 'sleep', 'activity_start', {
     ...bedtime,

@@ -72,6 +72,19 @@ Copy the three printed lines into `.env` and set `VAPID_SUBJECT` to an email (`m
 
 Keep a copy of `.env` somewhere safe (a password manager). If you lose the VAPID keys, every device has to turn reminders on again.
 
+**Journal AI (optional).** Voice logs and generated notes need an API key; leave the keys empty and the journal works without them (typed logs, your own notes, the weekly revision sheet).
+
+| Variable            | Value                                                                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `LLM_MODEL_API_KEY` | One key for everything: used by the service it belongs to (`gsk_…` Groq, `sk-ant-…` Anthropic, otherwise OpenAI).                        |
+| `OPENAI_API_KEY`    | Speech-to-text for voice logs (`gpt-transcribe`), and notes if Anthropic has no key (`gpt-6.1-sol`).                                     |
+| `ANTHROPIC_API_KEY` | Notes and weekly summaries (`claude-sonnet-5-5`; set `AI_NOTES_MODEL=claude-haiku-5-5` to spend less).                                   |
+| `GROQ_API_KEY`      | Covers both on its own: `whisper-large-v3` for voice, `openai/gpt-oss-120b` for notes.                                                   |
+| `AI_*_PROVIDER`     | `auto` (default) uses the first service with a key: voice OpenAI → Groq; notes Anthropic → OpenAI → Groq. Name one to pin it, or `none`. |
+| `AI_DAILY_LIMIT`    | AI requests per person per day (default 40).                                                                                             |
+
+The server log says which provider each feature uses, and warns if a key sits under the wrong name (for example a Groq `gsk_…` key in `OPENAI_API_KEY`). The other options, including the commented-out local providers (a Whisper server and Ollama), are described in `.env.example`. Keys stay on the server. Recordings are sent to the speech-to-text provider and deleted once transcribed; the app's journal settings show each person where their words go and let them switch AI off. Voice recording needs HTTPS, which the Caddy setup provides. If you use nginx, keep the larger upload limit for recordings from `deploy/nginx/buzzprep.conf`.
+
 ## 3. Start
 
 ```bash
@@ -204,6 +217,8 @@ npm run dev                # API on http://localhost:4000, app on http://localho
 No `.env` file is needed on your computer: the defaults already point at the local MongoDB and `http://localhost:5173`, allow open registration and use a development session secret. Don't copy `.env.example` for local use; it holds production settings.
 
 To try notifications locally, run `npm run vapid:generate` and save the three `VAPID_…` lines it prints in a new `.env` file in the project folder, then restart `npm run dev`. Chrome and Firefox allow service workers and push on `http://localhost`, so this works without HTTPS.
+
+To try the journal's voice logs and notes locally, add `OPENAI_API_KEY=…` and `ANTHROPIC_API_KEY=…` to the same `.env` file and restart `npm run dev`; the server log says which AI features are on. Browsers allow the microphone on `http://localhost`, but not on a plain-HTTP address such as your laptop's IP from a phone.
 
 Other useful commands:
 

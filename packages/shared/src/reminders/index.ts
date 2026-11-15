@@ -4,6 +4,6 @@
  */
 export * from './types';
 export { DEFAULT_NOTIFICATION_PREFERENCES, isWithinDailyRange } from './preferences';
-export { occurrenceUrl } from './links';
+export { journalTonightUrl, journalWeekUrl, occurrenceUrl } from './links';
 export { planNotifications } from './planner';
 export { timeRangeLabel } from './text';
