@@ -149,14 +149,18 @@ const ai = { LLM_MODEL_API_KEY: '', OPENAI_API_KEY: '', ANTHROPIC_API_KEY: '', G
 if (aiKey) ai[aiVar] = aiKey;
 
 console.log(
-  '\nCloudflare Tunnel token, for docker-compose.tunnel.yml: the long eyJ… value in the',
-  "tunnel's install command. Enter to skip.",
+  '\nCloudflare Tunnel token, for docker-compose.tunnel.yml: paste the Docker command from',
+  'Cloudflare (Tunnels › your tunnel), or just its eyJ… token. Enter to skip.',
 );
-const tunnelToken = await askUntil(
-  'TUNNEL_TOKEN (hidden): ',
-  (v) => (!v || /^eyJ[A-Za-z0-9+/=_-]{40,}$/.test(v) ? '' : 'Paste only the token (eyJ…).'),
-  { hidden: true },
-);
+const TOKEN = /eyJ[A-Za-z0-9+/=_-]{40,}/;
+const tunnelToken =
+  (
+    await askUntil(
+      'TUNNEL_TOKEN (hidden): ',
+      (v) => (!v || TOKEN.test(v) ? '' : 'No token found. Paste the command or the eyJ… token.'),
+      { hidden: true },
+    )
+  ).match(TOKEN)?.[0] ?? '';
 
 const vapid = vapidKeys();
 const lines = [
