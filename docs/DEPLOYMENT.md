@@ -187,7 +187,17 @@ The server itself can't run on Cloudflare Workers: it's a long-running Node.js p
 
 1. In the Cloudflare dashboard, **Workers & Pages → Create → Import a repository**, pick this repository and keep the build command `npm run build` and the deploy command `npx wrangler deploy`. The Worker's name must match `name` in `wrangler.jsonc` (`buzzprep`). Every push to the production branch deploys again.
 2. Add your subdomain: the Worker's **Settings → Domains & Routes → Add → Custom Domain**, for example `prep.example.com`. Cloudflare creates the DNS record and the certificate. Don't list routes in `wrangler.jsonc`: routes there replace the dashboard's on every deploy.
-3. Run the server at an address of its own, for example `prep-api.example.com` (steps 1–3 above, with that address as `APP_DOMAIN`), and set `PUBLIC_APP_URL` to the web app's address, `https://prep.example.com`: the server accepts requests whose `Origin` matches it and builds notification links from it.
+3. Run the server at an address of its own, for example `prep-api.example.com`, with `PUBLIC_APP_URL` set to the web app's address, `https://prep.example.com`: the server accepts requests whose `Origin` matches it and builds notification links from it. Either:
+   - **On a server with a public IP**: steps 1–3 above, with `prep-api.example.com` as `APP_DOMAIN`.
+   - **Anywhere, through a Cloudflare Tunnel** (no open ports, so a home machine works too), with MongoDB Atlas as the database. In the dashboard, **Networking → Tunnels → Create a tunnel** (Cloudflared) and give it the public hostname `prep-api.example.com` with service `http://app:4000`. Then, on the machine, in a clone of this repository:
+
+     ```bash
+     node scripts/create-env.mjs --url https://prep.example.com   # asks for the Atlas URI, an AI key and the tunnel token
+     docker compose -f docker-compose.tunnel.yml up -d --build
+     ```
+
+     `create-env.mjs` generates the secrets and VAPID keys itself; what you type is masked. Atlas must allow the machine's address (**Network Access**).
+
 4. Connect the two: the Worker's **Settings → Variables and Secrets → Add**, name `API_ORIGIN`, value `https://prep-api.example.com`. `keep_vars` in `wrangler.jsonc` keeps it across deploys.
 
 To try the Cloudflare setup locally: `npm run build`, then `npx wrangler dev` serves the app on `http://localhost:8787` (add `--var API_ORIGIN:http://localhost:4000` to reach a local server).

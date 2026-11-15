@@ -1,0 +1,30 @@
+# Server behind a Cloudflare Tunnel, with MongoDB Atlas: no open ports, no Caddy, no local
+# MongoDB. Pairs with the web app on Cloudflare (docs/DEPLOYMENT.md › Web app on Cloudflare).
+#   1. node scripts/create-env.mjs --url https://prep.example.com
+#      (asks for the Atlas connection string, an AI key and the tunnel token; writes .env)
+#   2. docker compose -f docker-compose.tunnel.yml up -d --build
+# In Cloudflare, the tunnel's public hostname (for example prep-api.example.com) points to
+# http://app:4000, and the Worker's API_ORIGIN variable to https://prep-api.example.com.
+name: buzzprep-tunnel
+
+services:
+  app:
+    build: .
+    image: buzzprep:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      # Requests arrive from the tunnel container, one proxy hop away.
+      TRUST_PROXY: '1'
+    volumes:
+      - ./config:/config:ro
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in .env (node scripts/create-env.mjs)}
+    depends_on:
+      - app

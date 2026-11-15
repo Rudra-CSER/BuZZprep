@@ -31,11 +31,19 @@ async function forwardToServer(request: Request, url: URL, apiOrigin: string | u
   // Method, body, cookies, Origin and X-Requested-With pass through unchanged: the server checks
   // Origin against its PUBLIC_APP_URL, so set that to this site's address.
   const forwarded = new Request(new URL(url.pathname + url.search, apiOrigin), request);
+  let response: Response;
   try {
-    return await fetch(forwarded);
+    response = await fetch(forwarded);
   } catch {
     return apiError(502, 'server_unreachable', 'Can’t reach the buZZprep server right now.');
   }
+  // The server answers errors as JSON. An HTML 5xx comes from Cloudflare itself (tunnel down,
+  // server offline), so answer in the server's format instead.
+  const json = response.headers.get('content-type')?.includes('application/json');
+  if (response.status >= 500 && !json) {
+    return apiError(502, 'server_unreachable', 'Can’t reach the buZZprep server right now.');
+  }
+  return response;
 }
 
 /** Same shape as the server's errors (`{ error: { code, message } }`), which the app displays. */
