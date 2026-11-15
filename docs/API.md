@@ -6,7 +6,7 @@ The source of truth for request bodies is the zod schemas in `packages/shared/sr
 
 ## Conventions
 
-**Authentication.** `POST /auth/register` and `POST /auth/login` set an `HttpOnly` session cookie (`__Host-bp_session` over HTTPS, `bp_session` on plain-HTTP local development). Everything except `/api/health`, `/api/meta`, registration, sign-in and the service worker's notification acknowledgement requires it. Paths below are relative to `/api/v1` unless shown in full. Sessions last 30 days and are extended while you use the app.
+**Authentication.** `POST /auth/register` and `POST /auth/login` set an `HttpOnly` session cookie (`__Host-bp_session` over HTTPS, `bp_session` on plain-HTTP local development). Everything except `/api/health`, `/api/meta`, registration, sign-in, password reset and the service worker's notification acknowledgement requires it. Paths below are relative to `/api/v1` unless shown in full. Sessions last 30 days and are extended while you use the app.
 
 **CSRF protection.** Every `POST`, `PUT`, `PATCH` and `DELETE` must:
 
@@ -43,12 +43,13 @@ curl -X POST https://prep.example.com/api/v1/auth/login \
 | 403    | `forbidden`                       | Wrong origin or missing header, registration closed, wrong invite code.          |
 | 404    | `not_found`                       | Doesn't exist, or belongs to someone else.                                       |
 | 409    | `conflict`                        | Duplicate (for example an email already registered).                             |
+| 410    | `reset_link_invalid`              | A password reset link that expired or was already used.                          |
 | 413    | `too_large`                       | Body over 1 MB.                                                                  |
 | 429    | `rate_limited`                    | Too many requests; retry later.                                                  |
 | 500    | `internal_error`                  | Unexpected error (details are logged, not returned).                             |
 | 503    | `unavailable`                     | A feature isn't configured on this server (for example push without VAPID keys). |
 
-**Rate limits.** 300 requests per minute per IP across the API; 20 sign-in or registration attempts per 15 minutes per IP; tighter per-user limits on password change, data export, import, account deletion and test pushes.
+**Rate limits.** 300 requests per minute per IP across the API; 20 sign-in, registration or password-reset requests per 15 minutes per IP; tighter per-user limits on password change, data export, import, account deletion and test pushes.
 
 **Caching.** API responses are `Cache-Control: no-store`. The app keeps its own offline cache.
 
@@ -63,16 +64,18 @@ curl -X POST https://prep.example.com/api/v1/auth/login \
 
 ### Auth and account
 
-| Method | Path                | Description                                                                                             |
-| ------ | ------------------- | ------------------------------------------------------------------------------------------------------- |
-| POST   | `/auth/register`    | `{ email, password (10+ chars), displayName, timezone, inviteCode? }`. The first account becomes admin. |
-| POST   | `/auth/login`       | `{ email, password }`.                                                                                  |
-| POST   | `/auth/logout`      | Ends the current session.                                                                               |
-| GET    | `/auth/me`          | `{ user, onboardingCompleted, timezone, theme }`.                                                       |
-| PATCH  | `/account`          | `{ displayName }`.                                                                                      |
-| POST   | `/account/password` | `{ currentPassword, newPassword }`. Signs out your other sessions.                                      |
-| GET    | `/account/export`   | Downloads all of your data as JSON (no session tokens or device keys).                                  |
-| DELETE | `/account`          | `{ password, confirm: "DELETE" }`. Permanently deletes the account and all of its data.                 |
+| Method | Path                    | Description                                                                                                                                                                                                                            |
+| ------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/auth/register`        | `{ email, password (10+ chars), displayName, timezone, inviteCode? }`. The first account becomes admin.                                                                                                                                |
+| POST   | `/auth/login`           | `{ email, password }`.                                                                                                                                                                                                                 |
+| POST   | `/auth/logout`          | Ends the current session.                                                                                                                                                                                                              |
+| GET    | `/auth/me`              | `{ user, onboardingCompleted, timezone, theme }`.                                                                                                                                                                                      |
+| POST   | `/auth/password/forgot` | `{ email }`. Always `202`, for any address. When the server has email (`SMTP_URL`) and the address has an account, a one-time reset link is emailed (at most one every 2 minutes).                                                     |
+| PATCH  | `/auth/password`        | `{ token, password (10+ chars) }`, the token from a reset link. Stores the new password (Argon2id), ends every session and link of the account, and signs in on this device. `410 reset_link_invalid` if the link expired or was used. |
+| PATCH  | `/account`              | `{ displayName }`.                                                                                                                                                                                                                     |
+| POST   | `/account/password`     | `{ currentPassword, newPassword }`. Signs out your other sessions.                                                                                                                                                                     |
+| GET    | `/account/export`       | Downloads all of your data as JSON (no session tokens or device keys).                                                                                                                                                                 |
+| DELETE | `/account`              | `{ password, confirm: "DELETE" }`. Permanently deletes the account and all of its data.                                                                                                                                                |
 
 ### Profile, setup and configuration
 

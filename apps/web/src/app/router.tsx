@@ -14,8 +14,20 @@ const lazy =
   });
 
 export const router = createBrowserRouter([
+  {
+    path: '/welcome',
+    lazy: lazy(() => import('@/features/welcome/WelcomePage'), 'WelcomePage'),
+  },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
+  {
+    path: '/forgot-password',
+    lazy: lazy(() => import('@/features/auth/ForgotPasswordPage'), 'ForgotPasswordPage'),
+  },
+  {
+    path: '/reset-password',
+    lazy: lazy(() => import('@/features/auth/ResetPasswordPage'), 'ResetPasswordPage'),
+  },
   {
     element: <RequireAuth />,
     children: [

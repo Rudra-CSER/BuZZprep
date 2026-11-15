@@ -12,6 +12,7 @@ await build({
     'import-config': 'scripts/import-config.ts',
     'generate-vapid': 'scripts/generate-vapid.ts',
     'reset-password': 'scripts/reset-password.ts',
+    'reset-link': 'scripts/reset-link.ts',
   },
   outdir: 'dist',
   bundle: true,

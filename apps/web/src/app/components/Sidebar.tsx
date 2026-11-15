@@ -17,7 +17,7 @@ export function Sidebar({ online }: { online: boolean }) {
     <aside className="chrome sticky top-0 hidden h-dvh w-[calc(16.5rem+var(--safe-left))] shrink-0 flex-col pb-[calc(var(--safe-bottom)+0.75rem)] pl-[var(--safe-left)] pt-[calc(var(--safe-top)+1.25rem)] lg:flex">
       <Link to="/" className="mx-5 mb-7 flex w-fit items-center gap-2.5 rounded-[10px]">
         <Logo decorative className="size-8 rounded-[9px]" />
-        <Wordmark className="text-[22px] leading-none" />
+        <Wordmark className="text-[20px] leading-none" />
       </Link>
 
       <nav aria-label="Main" className="grid grid-cols-1 gap-0.5 px-3">

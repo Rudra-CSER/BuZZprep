@@ -1,4 +1,5 @@
 import type { Env } from './config/env';
+import type { Mailer } from './lib/mailer';
 import type { AiService } from './modules/ai/ai.service';
 import type { NotificationService } from './modules/notifications/notification.service';
 
@@ -8,4 +9,6 @@ export interface AppContext {
   notifications: NotificationService;
   /** Optional AI providers for the journal (transcription, notes). */
   ai: AiService;
+  /** Email for password resets; null when SMTP isn't configured. */
+  mailer: Mailer | null;
 }

@@ -85,4 +85,4 @@ Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). To report a v
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). The welcome page's animations use [GSAP](https://gsap.com), which is free to use under its own [Standard "No Charge" licence](https://gsap.com/standard-license) rather than MIT.

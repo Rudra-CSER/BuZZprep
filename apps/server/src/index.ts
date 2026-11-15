@@ -35,6 +35,12 @@ async function main() {
   );
   for (const note of ai.notes) logger[note.level](note.message);
 
+  if (!env.SMTP_URL) {
+    logger.info(
+      'Password reset email is off: set SMTP_URL to send reset links, or make them with `npm run password:link`.',
+    );
+  }
+
   await connectDatabase(env.MONGODB_URI);
   const notifications = new NotificationService(env, createWebPushSender(env));
 

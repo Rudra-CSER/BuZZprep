@@ -71,7 +71,9 @@ export function OnboardingPage() {
       </header>
 
       <main className="mx-auto w-full max-w-xl flex-1 px-5 pb-8 pt-7">
-        <h1 className="text-[26px] font-semibold leading-tight">{current.title}</h1>
+        <h1 className="text-[26px] font-semibold leading-tight tracking-[-0.01em]">
+          {current.title}
+        </h1>
         <p className="mt-1.5 text-[15px] text-muted-foreground">{current.description}</p>
         <div className="mt-7 grid gap-6">{current.render(answers, update)}</div>
       </main>

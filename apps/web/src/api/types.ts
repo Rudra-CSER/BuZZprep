@@ -50,6 +50,8 @@ export interface MetaResponse {
   setupRequired?: boolean;
   /** Journal AI features this server offers. */
   journalAi?: { transcription: boolean; notes: boolean };
+  /** How a forgotten password is reset: a link by email, or a link from the server's owner. */
+  passwordReset?: 'email' | 'owner';
 }
 
 export interface Profile extends ProfileInput {

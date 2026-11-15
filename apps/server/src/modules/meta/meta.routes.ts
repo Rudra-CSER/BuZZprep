@@ -28,6 +28,8 @@ export function metaRouter({ env, notifications, ai }: AppContext): Router {
       // Which journal AI features exist (booleans only: no providers, models or keys).
       journalAi: ai.availability,
       setupRequired: databaseState() === 'connected' ? await isSetupRequired() : false,
+      // How a forgotten password is reset here: an emailed link, or a link from the owner.
+      passwordReset: env.SMTP_URL ? 'email' : 'owner',
     });
   });
 

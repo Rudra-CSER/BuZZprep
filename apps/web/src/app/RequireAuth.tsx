@@ -5,12 +5,19 @@ import { StatusBarBackdrop } from '@/components/StatusBarBackdrop';
 import { Button } from '@/components/ui/button';
 import { useMe } from '@/features/auth/api';
 
-/** Renders its routes only for a signed-in user, and sends new accounts through setup first. */
+/**
+ * Renders its routes only for a signed-in user, and sends new accounts through setup first.
+ * Someone signed out who opens the app's address sees the preview page; a deep link to a page
+ * asks them to sign in and comes back afterwards.
+ */
 export function RequireAuth() {
   const { data: me, isPending, isError, refetch } = useMe();
   const location = useLocation();
+  const atRoot = location.pathname === '/';
   if (isPending) return <Splash />;
   if (isError && me === undefined) {
+    // Nothing cached and no server answer: a visitor is better served by the preview.
+    if (atRoot) return <Navigate to="/welcome" replace />;
     return (
       <div className="grid min-h-dvh place-items-center px-6 text-center">
         <StatusBarBackdrop />
@@ -27,8 +34,10 @@ export function RequireAuth() {
       </div>
     );
   }
-  if (!me)
+  if (!me) {
+    if (atRoot) return <Navigate to="/welcome" replace />;
     return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+  }
   if (!me.onboardingCompleted && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }

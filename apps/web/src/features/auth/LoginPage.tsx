@@ -78,6 +78,9 @@ export function LoginPage() {
         <Button type="submit" size="lg" disabled={busy || !email || !password} className="mt-1">
           {busy ? 'Signing in…' : 'Sign in'}
         </Button>
+        <Link to="/forgot-password" className="w-fit text-[14px] font-medium text-primary">
+          Forgot your password?
+        </Link>
       </form>
     </AuthFrame>
   );

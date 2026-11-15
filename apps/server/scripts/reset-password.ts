@@ -1,6 +1,7 @@
 /**
- * Reset an account's password from the server (there is no email-based reset).
- * Prints a new random password once and signs the account out everywhere.
+ * Reset an account's password from the server: prints a new random password once and signs the
+ * account out everywhere. To let the person choose their own password instead, make a one-time
+ * reset link with `npm run password:link`.
  *
  *   npm run password:reset -- --email you@example.com
  *

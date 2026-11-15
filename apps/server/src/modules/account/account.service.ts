@@ -40,12 +40,15 @@ export async function changePassword(
   await deleteOtherSessions(userId, currentSessionId);
 }
 
-/** Everything stored about the user, as JSON (data portability). No session tokens or push keys. */
+/**
+ * Everything stored about the user, as JSON (data portability). No session tokens, reset links
+ * or push keys.
+ */
 export async function exportAccountData(userId: Types.ObjectId) {
   const user = await User.findById(userId).lean<IUser>();
   const data: Record<string, unknown> = {};
   for (const [name, model] of Object.entries(USER_OWNED_MODELS)) {
-    if (name === 'sessions') continue;
+    if (name === 'sessions' || name === 'passwordResets') continue;
     const docs = await model.find({ userId }).lean();
     data[name] = toApi(docs, name === 'pushSubscriptions' ? ['userId', 'keys'] : ['userId']);
   }

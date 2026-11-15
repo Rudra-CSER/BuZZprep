@@ -1,5 +1,6 @@
 import type { Types } from 'mongoose';
 import { loadEnv } from '../src/config/env';
+import type { MailMessage, Mailer } from '../src/lib/mailer';
 import {
   PushSendError,
   type PushSender,
@@ -25,6 +26,14 @@ export function testEnv(overrides: Record<string, string> = {}) {
     LOG_LEVEL: 'silent',
     ...overrides,
   });
+}
+
+/** Records email instead of sending it. */
+export class FakeMailer implements Mailer {
+  sent: MailMessage[] = [];
+  async send(message: MailMessage) {
+    this.sent.push(message);
+  }
 }
 
 /** Records pushes instead of sending them; can simulate push-service failures. */

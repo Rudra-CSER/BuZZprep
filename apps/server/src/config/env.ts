@@ -34,6 +34,15 @@ const envSchema = z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .default('info'),
 
+    // ── Email (optional) ───────────────────────────────────────────────────────
+    /**
+     * SMTP server for password reset emails, e.g. smtps://user:password@smtp.example.com:465.
+     * Without it, the server owner makes reset links with `npm run password:link`.
+     */
+    SMTP_URL: z.string().optional(),
+    /** Sender address, e.g. "buZZprep <no-reply@prep.example.com>". */
+    MAIL_FROM: z.string().optional(),
+
     // ── Journal AI (optional) ──────────────────────────────────────────────────
     // Keys are read only here, on the server. Nothing below is ever sent to the browser.
     /** One key for whichever provider it belongs to (by prefix); see the AI registry. */
@@ -84,6 +93,13 @@ const envSchema = z
         code: 'custom',
         path: ['VAPID_SUBJECT'],
         message: 'VAPID_SUBJECT must start with mailto: or https://',
+      });
+    }
+    if (env.SMTP_URL && !/^smtps?:\/\//.test(env.SMTP_URL)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['SMTP_URL'],
+        message: 'SMTP_URL must start with smtp:// or smtps://',
       });
     }
     if (env.REGISTRATION_MODE === 'invite' && !env.INVITE_CODE) {

@@ -27,6 +27,7 @@
     "vapid:generate": "npm run vapid:generate -w @buzzprep/server",
     "config:import": "npm run config:import -w @buzzprep/server --",
     "password:reset": "npm run password:reset -w @buzzprep/server --",
+    "password:link": "npm run password:link -w @buzzprep/server --",
     "icons": "node scripts/generate-icons.mjs"
   },
   "devDependencies": {

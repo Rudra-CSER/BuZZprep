@@ -2,26 +2,38 @@
 // Creates the server's .env for a production deployment, with fresh secrets.
 //
 //   node scripts/create-env.mjs --url https://prep.example.com [--file .env] [--force]
+//   node scripts/create-env.mjs --rotate [--file .env]
 //
 // It generates SESSION_SECRET, INVITE_CODE and the Web Push (VAPID) keys, and asks for the
 // MongoDB connection string, an optional AI key and an optional Cloudflare Tunnel token. Typed
 // values are masked, so they never show on screen, in a chat or in your shell history.
+// --rotate replaces the generated secrets in an existing file (if they were exposed), keeps
+// the database, AI key and tunnel token it already has, and asks only for missing ones.
 // Needs only Node.js, no npm install. Without Node on the machine, run it in a container:
 //   docker run --rm -it -u "$(id -u):$(id -g)" -v "$PWD":/app -w /app node:24-alpine \
 //     node scripts/create-env.mjs --url https://prep.example.com
 import { generateKeyPairSync, randomBytes } from 'node:crypto';
-import { existsSync, writeFileSync } from 'node:fs';
-import { parseArgs } from 'node:util';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { parseArgs, parseEnv } from 'node:util';
 
 const { values: args } = parseArgs({
   options: {
     url: { type: 'string' },
     file: { type: 'string', default: '.env' },
     force: { type: 'boolean', default: false },
+    rotate: { type: 'boolean', default: false },
   },
 });
 
-if (existsSync(args.file) && !args.force) {
+/** Values kept from the existing file with --rotate. */
+let existing = {};
+if (args.rotate) {
+  if (!existsSync(args.file)) {
+    console.error(`${args.file} doesn't exist yet. Run this without --rotate to create it.`);
+    process.exit(1);
+  }
+  existing = parseEnv(readFileSync(args.file, 'utf8'));
+} else if (existsSync(args.file) && !args.force) {
   console.error(`${args.file} already exists. Rename it first, or pass --force to replace it.`);
   process.exit(1);
 }
@@ -117,50 +129,71 @@ function vapidKeys() {
 
 const appUrl = new URL(
   args.url ??
+    existing.PUBLIC_APP_URL ??
     (await askUntil('Web app address (https://…): ', (v) =>
       /^https:\/\/[^/\s]+/.test(v) ? '' : 'Enter the full https:// address.',
     )),
 ).origin;
 
-console.log(
-  '\nMongoDB connection string: in Atlas, Connect › Drivers, with your password filled in.',
-);
-const mongoUri = await askUntil(
-  'MONGODB_URI (hidden): ',
-  (v) =>
-    !/^mongodb(\+srv)?:\/\//.test(v)
-      ? 'It starts with mongodb+srv:// or mongodb://.'
-      : /<password>|<db_password>/.test(v)
-        ? 'Replace <password> with the real password.'
-        : '',
-  { hidden: true },
-);
+const kept = [];
+let mongoUri = existing.MONGODB_URI;
+if (mongoUri) {
+  kept.push('MONGODB_URI');
+} else {
+  console.log(
+    '\nMongoDB connection string: in Atlas, Connect › Drivers, with your password filled in.',
+    '\nIn a terminal, paste with Ctrl+Shift+V.',
+  );
+  mongoUri = await askUntil(
+    'MONGODB_URI (hidden): ',
+    (v) =>
+      !/^mongodb(\+srv)?:\/\//.test(v)
+        ? 'It starts with mongodb+srv:// or mongodb://.'
+        : /<password>|<db_password>/.test(v)
+          ? 'Replace <password> with the real password.'
+          : '',
+    { hidden: true },
+  );
+}
 
-console.log(
-  '\nAI key for the journal (gsk_… Groq, sk-ant-… Anthropic, sk-… OpenAI). Enter to skip.',
-);
-const aiKey = await ask('AI key (hidden): ', { hidden: true });
-const aiVar = aiKey.startsWith('gsk_')
-  ? 'GROQ_API_KEY'
-  : aiKey.startsWith('sk-ant-')
-    ? 'ANTHROPIC_API_KEY'
-    : 'OPENAI_API_KEY';
-const ai = { LLM_MODEL_API_KEY: '', OPENAI_API_KEY: '', ANTHROPIC_API_KEY: '', GROQ_API_KEY: '' };
-if (aiKey) ai[aiVar] = aiKey;
+const AI_VARS = ['LLM_MODEL_API_KEY', 'OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'GROQ_API_KEY'];
+const ai = Object.fromEntries(AI_VARS.map((k) => [k, existing[k] ?? '']));
+let aiVar = AI_VARS.find((k) => ai[k]);
+if (aiVar) {
+  kept.push(aiVar);
+} else {
+  console.log(
+    '\nAI key for the journal (gsk_… Groq, sk-ant-… Anthropic, sk-… OpenAI). Enter to skip.',
+  );
+  const aiKey = await ask('AI key (hidden): ', { hidden: true });
+  if (aiKey) {
+    aiVar = aiKey.startsWith('gsk_')
+      ? 'GROQ_API_KEY'
+      : aiKey.startsWith('sk-ant-')
+        ? 'ANTHROPIC_API_KEY'
+        : 'OPENAI_API_KEY';
+    ai[aiVar] = aiKey;
+  }
+}
 
-console.log(
-  '\nCloudflare Tunnel token, for docker-compose.tunnel.yml: paste the Docker command from',
-  'Cloudflare (Tunnels › your tunnel), or just its eyJ… token. Enter to skip.',
-);
 const TOKEN = /eyJ[A-Za-z0-9+/=_-]{40,}/;
-const tunnelToken =
-  (
-    await askUntil(
-      'TUNNEL_TOKEN (hidden): ',
-      (v) => (!v || TOKEN.test(v) ? '' : 'No token found. Paste the command or the eyJ… token.'),
-      { hidden: true },
-    )
-  ).match(TOKEN)?.[0] ?? '';
+let tunnelToken = existing.TUNNEL_TOKEN ?? '';
+if (tunnelToken) {
+  kept.push('TUNNEL_TOKEN');
+} else {
+  console.log(
+    '\nCloudflare Tunnel token, for docker-compose.tunnel.yml: in Cloudflare, Tunnels › your',
+    'tunnel, copy the Docker command and paste it here (Ctrl+Shift+V). Enter to skip.',
+  );
+  tunnelToken =
+    (
+      await askUntil(
+        'TUNNEL_TOKEN (hidden): ',
+        (v) => (!v || TOKEN.test(v) ? '' : 'No token found. Paste the command or the eyJ… token.'),
+        { hidden: true },
+      )
+    ).match(TOKEN)?.[0] ?? '';
+}
 
 const vapid = vapidKeys();
 const lines = [
@@ -183,9 +216,11 @@ const lines = [
 ];
 writeFileSync(args.file, lines.join('\n'), { mode: 0o600 });
 
-console.log(`\nCreated ${args.file} for ${appUrl}.`);
+console.log(`\n${args.rotate ? 'Updated' : 'Created'} ${args.file} for ${appUrl}.`);
+console.log('New: SESSION_SECRET, INVITE_CODE and Web Push keys.');
+if (kept.length) console.log(`Kept: ${kept.join(', ')}.`);
 console.log(
-  `AI: ${aiKey ? aiVar : 'off (no key)'}. Web Push: on. Sign-up: invite only.` +
+  `AI: ${aiVar ?? 'off (no key)'}. Sign-up: invite only.` +
     ` Tunnel: ${tunnelToken ? 'set' : 'not set'}.`,
 );
 console.log(`Your invite code is the INVITE_CODE line in ${args.file}.`);

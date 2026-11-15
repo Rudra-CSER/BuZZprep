@@ -11,6 +11,7 @@ import { JournalEntry } from './journal-entry.model';
 import { LearningTopic } from './learning-topic.model';
 import { LearningTrack } from './learning-track.model';
 import { Notification } from './notification.model';
+import { PasswordReset } from './password-reset.model';
 import { Plan } from './plan.model';
 import { PushSubscriptionModel } from './push-subscription.model';
 import { Reminder } from './reminder.model';
@@ -24,6 +25,7 @@ import { WeeklyReview } from './weekly-review.model';
 // Accounts
 export * from './user.model';
 export * from './session.model';
+export * from './password-reset.model';
 export * from './user-profile.model';
 // Plan and schedule
 export * from './plan.model';
@@ -77,6 +79,7 @@ export const USER_OWNED_MODELS: Record<string, Model<any>> = {
   habitCompletions: HabitCompletion,
   applications: CareerApplication,
   sessions: Session,
+  passwordResets: PasswordReset,
 };
 
 export const ALL_MODELS = [User, ...Object.values(USER_OWNED_MODELS)];

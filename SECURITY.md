@@ -14,7 +14,8 @@ Supported versions: the latest release on the default branch.
 
 - Passwords are hashed with argon2id (19 MiB memory, 2 iterations) and must be at least 10 characters. Unknown emails and wrong passwords get the same answer, in the same time.
 - Sessions are 256-bit random tokens. Only their SHA-256 hash is stored, so a database leak doesn't expose usable sessions. The cookie is `HttpOnly`, `SameSite=Lax`, and `Secure` with the `__Host-` prefix over HTTPS. Sessions last 30 days and are renewed while you use the app; changing your password signs out every other session.
-- Registration can require an invite code (including for the first account) or be closed. There is no email-based password reset; an administrator resets passwords from the server.
+- Registration can require an invite code (including for the first account) or be closed.
+- Forgotten passwords are reset with one-time links: 256-bit random tokens, stored only as SHA-256 hashes, valid for 60 minutes and used up on first use. The token travels in the link's fragment, so it never reaches server logs or Referer headers. The forgot-password endpoint answers the same for every address and sends at most one email per account every 2 minutes. Using a link ends every session and every other link of the account. Links are emailed when `SMTP_URL` is set; otherwise the server owner makes them with `npm run password:link`.
 
 **Requests**
 
@@ -32,7 +33,7 @@ Supported versions: the latest release on the default branch.
 
 **Secrets**
 
-- Secrets come only from the environment (`.env`), never from the source code: `SESSION_SECRET`, `VAPID_PRIVATE_KEY`, `MONGO_ROOT_PASSWORD`, `INVITE_CODE`.
+- Secrets come only from the environment (`.env`), never from the source code: `SESSION_SECRET`, `VAPID_PRIVATE_KEY`, `MONGO_ROOT_PASSWORD`, `INVITE_CODE`, `SMTP_URL`.
 - The browser only ever receives the VAPID **public** key.
 - Production refuses to start with a missing or weak `SESSION_SECRET`.
 - Personal configuration bundles (`config/*.local.json`) and `.env` files are git-ignored.

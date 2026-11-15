@@ -43,15 +43,16 @@ cp .env.example .env
 
 Edit `.env`:
 
-| Variable              | Value                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| `APP_DOMAIN`          | `prep.example.com`                                                                          |
-| `PUBLIC_APP_URL`      | `https://prep.example.com`                                                                  |
-| `SESSION_SECRET`      | Output of `openssl rand -base64 48`                                                         |
-| `REGISTRATION_MODE`   | `invite` (recommended), `closed` or `open`; see below                                       |
-| `INVITE_CODE`         | Output of `openssl rand -hex 16`                                                            |
-| `MONGO_ROOT_PASSWORD` | Output of `openssl rand -hex 24` (hex only: the password is placed inside a connection URL) |
-| `VAPID_*`             | Generated in the next step                                                                  |
+| Variable                | Value                                                                                                                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `APP_DOMAIN`            | `prep.example.com`                                                                                                                                                                    |
+| `PUBLIC_APP_URL`        | `https://prep.example.com`                                                                                                                                                            |
+| `SESSION_SECRET`        | Output of `openssl rand -base64 48`                                                                                                                                                   |
+| `REGISTRATION_MODE`     | `invite` (recommended), `closed` or `open`; see below                                                                                                                                 |
+| `INVITE_CODE`           | Output of `openssl rand -hex 16`                                                                                                                                                      |
+| `MONGO_ROOT_PASSWORD`   | Output of `openssl rand -hex 24` (hex only: the password is placed inside a connection URL)                                                                                           |
+| `VAPID_*`               | Generated in the next step                                                                                                                                                            |
+| `SMTP_URL`, `MAIL_FROM` | Optional: email for password reset links, e.g. `smtps://user:password@smtp.example.com:465` and `buZZprep <no-reply@prep.example.com>`. See [Forgotten password](#forgotten-password) |
 
 **Who can register:**
 
@@ -133,14 +134,23 @@ Indexes are created at startup; there are no manual migrations so far. Read the 
 
 ## Forgotten password
 
-There is no email-based reset (the server doesn't send email). Reset a password on the server instead; it prints a new random password once and signs that account out everywhere:
+**With email.** Set `SMTP_URL` (and `MAIL_FROM`) in `.env`, for example `smtps://user:password@smtp.example.com:465` from your mail provider, and restart. **Forgot your password?** on the sign-in page then emails a one-time link that works for 60 minutes. The new password is stored as an Argon2id hash, and every device signed in to that account is signed out.
+
+**Without email.** Make the link on the server and give it to the person privately. It works once, for 60 minutes (`--minutes` changes that):
+
+```bash
+docker compose exec app node apps/server/dist/reset-link.js --email you@example.com
+# local development: npm run password:link -- --email you@example.com
+```
+
+Or set a random password directly. It is printed once, and the account is signed out everywhere; sign in with it, then change it in **Profile → Change password**:
 
 ```bash
 docker compose exec app node apps/server/dist/reset-password.js --email you@example.com
 # local development: npm run password:reset -- --email you@example.com
 ```
 
-Sign in with it, then choose a new one in **Profile → Change password**.
+With the Cloudflare Tunnel setup, start these with `docker compose -f docker-compose.tunnel.yml exec app …`.
 
 ## Backups
 

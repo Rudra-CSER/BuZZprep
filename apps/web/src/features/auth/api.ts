@@ -1,4 +1,9 @@
-import type { LoginInput, RegisterInput } from '@buzzprep/shared';
+import type {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+} from '@buzzprep/shared';
 import { useQuery } from '@tanstack/react-query';
 import { api, ApiError } from '@/api/client';
 import type { MeResponse, MetaResponse } from '@/api/types';
@@ -28,6 +33,9 @@ export function useMe() {
       }
     },
     staleTime: 60_000,
+    // One quick retry when the server is down or unreachable, so a visitor isn't kept waiting.
+    retry: (count, err) =>
+      !(err instanceof ApiError && err.status > 0 && err.status < 500) && count < 1,
   });
 }
 
@@ -41,4 +49,14 @@ export function register(body: RegisterInput) {
 
 export function logout() {
   return api('/v1/auth/logout', { method: 'POST' });
+}
+
+/** Ask for a reset link. The server answers the same whether or not the address has an account. */
+export function forgotPassword(body: ForgotPasswordInput) {
+  return api('/v1/auth/password/forgot', { method: 'POST', body });
+}
+
+/** Set a new password with a reset link's token; signs in on this device. */
+export function resetPassword(body: ResetPasswordInput) {
+  return api<AuthResult>('/v1/auth/password', { method: 'PATCH', body });
 }

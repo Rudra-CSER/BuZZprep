@@ -29,7 +29,7 @@ export function TopBar({ online }: { online: boolean }) {
           <Logo decorative className="size-[26px] rounded-[8px]" />
           <Wordmark
             className={cn(
-              'text-[20px] leading-none transition-opacity duration-200 max-[359px]:sr-only',
+              'text-[19px] leading-none transition-opacity duration-200 max-[359px]:sr-only',
               title && 'opacity-0',
             )}
           />
@@ -38,7 +38,7 @@ export function TopBar({ online }: { online: boolean }) {
         <p
           aria-hidden
           className={cn(
-            'pointer-events-none absolute inset-x-16 truncate text-center font-display text-[17px] font-semibold transition-[opacity,translate] duration-200',
+            'pointer-events-none absolute inset-x-16 truncate text-center text-[17px] font-semibold tracking-[-0.01em] transition-[opacity,translate] duration-200',
             title ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0',
           )}
         >

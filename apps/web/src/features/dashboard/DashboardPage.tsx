@@ -49,7 +49,10 @@ export function DashboardPage() {
       <header className="mb-5 grid gap-3 pt-2">
         <div className="grid gap-0.5">
           <p className="text-[14px] text-muted-foreground">{longDate(data.today)}</p>
-          <h1 data-nav-title="Home" className="text-[30px] font-bold leading-tight md:text-[34px]">
+          <h1
+            data-nav-title="Home"
+            className="text-[28px] font-semibold leading-tight tracking-[-0.01em] md:text-[30px]"
+          >
             {data.greeting}, {data.displayName.split(' ')[0]}
           </h1>
         </div>

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
  */
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn('whitespace-nowrap font-display font-bold', className)}>
+    <span className={cn('whitespace-nowrap font-semibold tracking-[-0.015em]', className)}>
       <span aria-hidden="true">
         bu<span className="text-gold">ZZ</span>prep
       </span>
