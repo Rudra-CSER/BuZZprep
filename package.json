@@ -1,0 +1,44 @@
+{
+  "name": "buzzprep",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source, self-hostable PWA for structured interview preparation, daily scheduling, reminders, journaling and habit tracking.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,web -c blue,magenta \"npm run dev -w @buzzprep/server\" \"npm run dev -w @buzzprep/web\"",
+    "dev:db": "docker compose -f docker-compose.dev.yml up -d",
+    "dev:db:down": "docker compose -f docker-compose.dev.yml down",
+    "build": "npm run build -w @buzzprep/web && npm run build -w @buzzprep/server",
+    "start": "npm run start -w @buzzprep/server",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "vapid:generate": "npm run vapid:generate -w @buzzprep/server",
+    "config:import": "npm run config:import -w @buzzprep/server --",
+    "password:reset": "npm run password:reset -w @buzzprep/server --",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.7",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "sharp": "^0.35.5",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.2"
+  }
+}

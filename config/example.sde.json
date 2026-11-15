@@ -1,0 +1,1339 @@
+{
+  "format": "buzzprep.config",
+  "version": 1,
+  "name": "Example: SDE interview preparation (template defaults)",
+  "profile": {
+    "timezone": "UTC",
+    "dayBoundaryMinutes": 240,
+    "weekStartsOn": 1,
+    "work": {
+      "enabled": true,
+      "label": "Work",
+      "days": [1, 2, 3, 4, 5],
+      "start": "09:30",
+      "end": "18:00",
+      "commuteMinutes": 30,
+      "pressure": "moderate"
+    },
+    "sleep": {
+      "currentBedtime": "00:30",
+      "currentWake": "08:00",
+      "targetBedtime": "23:30",
+      "targetWake": "07:00",
+      "gradualShift": true
+    },
+    "study": {
+      "weekdayMinutes": 120,
+      "weekendMinutes": 120,
+      "preferredWindow": "evening",
+      "morningRevisionMinutes": 30
+    },
+    "fitness": {
+      "enabled": true,
+      "sessionsPerWeek": 3,
+      "days": [1, 3, 5],
+      "durationMinutes": 60,
+      "time": null
+    },
+    "restDays": [7],
+    "skills": {
+      "levels": {
+        "dsa": "beginner",
+        "system_design": "beginner",
+        "cs_fundamentals": "beginner"
+      },
+      "notes": null
+    },
+    "notifications": {
+      "enabled": true,
+      "quietHours": {
+        "enabled": true,
+        "start": "23:45",
+        "end": "06:45"
+      },
+      "kinds": {},
+      "mutedCategories": [],
+      "defaultSnoozeMinutes": 10,
+      "hour12": true
+    }
+  },
+  "plan": {
+    "title": "Become interview-ready for SDE-1 roles",
+    "goalType": "interview",
+    "targetRole": "SDE-1",
+    "targetCompanies": [],
+    "stretchCompanies": [],
+    "compensationTarget": null,
+    "description": null,
+    "startDate": "2027-01-04",
+    "deadline": "2027-07-05",
+    "milestones": [
+      {
+        "title": "Arrays → Binary Search revised; 40 Easy problems solved independently",
+        "dueDate": "2027-02-04",
+        "completed": false,
+        "note": null
+      },
+      {
+        "title": "Linked lists, stacks, recursion done; System Design fundamentals covered",
+        "dueDate": "2027-03-05",
+        "completed": false,
+        "note": null
+      },
+      {
+        "title": "Trees, BST and heaps; 3 system design case studies",
+        "dueDate": "2027-04-05",
+        "completed": false,
+        "note": null
+      },
+      {
+        "title": "Graphs and greedy; CS fundamentals revision pass",
+        "dueDate": "2027-05-06",
+        "completed": false,
+        "note": null
+      },
+      {
+        "title": "Dynamic programming; weekly mock interviews",
+        "dueDate": "2027-06-04",
+        "completed": false,
+        "note": null
+      },
+      {
+        "title": "Interview-ready: applications and referrals active",
+        "dueDate": "2027-07-05",
+        "completed": false,
+        "note": null
+      }
+    ]
+  },
+  "tracks": [
+    {
+      "ref": "dsa",
+      "title": "DSA",
+      "kind": "dsa",
+      "description": "Topic-wise problem solving. Independent solves are what count.",
+      "color": "indigo",
+      "resources": [
+        {
+          "title": "Striver’s A2Z DSA (takeUforward)",
+          "url": "https://takeuforward.org/",
+          "type": "sheet"
+        },
+        {
+          "title": "NeetCode practice",
+          "url": "https://neetcode.io/",
+          "type": "sheet"
+        }
+      ],
+      "topics": [
+        {
+          "title": "Arrays",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Strings",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Hashing",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Two Pointers",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Sliding Window",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Binary Search",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Linked Lists",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Stack and Queue",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Recursion",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Trees",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "BST",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Heaps",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Graphs",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Greedy",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Dynamic Programming",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        }
+      ]
+    },
+    {
+      "ref": "system_design",
+      "title": "System Design",
+      "kind": "system_design",
+      "description": "From fundamentals to practical design interviews.",
+      "color": "sky",
+      "resources": [],
+      "topics": [
+        {
+          "title": "Client-server architecture",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "HTTP and REST",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Latency and throughput",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Scalability",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Load balancing",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Caching",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Redis",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "SQL and NoSQL",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Database indexing",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Replication and partitioning",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Message queues",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Pub/Sub",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "CAP theorem",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Consistency",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Rate limiting",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Microservices",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: URL shortener",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: Chat application",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: Notification system",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: Food delivery platform",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: E-commerce backend",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Design: File storage service",
+          "type": "practice",
+          "resources": [],
+          "notes": null
+        }
+      ]
+    },
+    {
+      "ref": "cs_fundamentals",
+      "title": "CS Fundamentals",
+      "kind": "cs_fundamentals",
+      "description": "Interview-focused OS, DBMS, networks and OOP.",
+      "color": "teal",
+      "resources": [],
+      "topics": [
+        {
+          "title": "OS: Processes and threads",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "OS: CPU scheduling",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "OS: Synchronization and deadlocks",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "OS: Memory management and paging",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "DBMS: Normalization",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "DBMS: Transactions and ACID",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "DBMS: Indexing and query basics",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "DBMS: SQL joins and aggregation",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "CN: OSI and TCP/IP models",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "CN: TCP vs UDP",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "CN: HTTP, HTTPS and TLS",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "CN: DNS and CDNs",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "OOP principles",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "SOLID and design patterns",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        },
+        {
+          "title": "Low-level design basics",
+          "type": "concept",
+          "resources": [],
+          "notes": null
+        }
+      ]
+    }
+  ],
+  "schedule": {
+    "name": "My routine",
+    "description": null,
+    "activities": [
+      {
+        "title": "Sleep",
+        "description": "Protect it — everything else depends on it.",
+        "category": "sleep",
+        "startTime": "23:30",
+        "durationMinutes": 450,
+        "recurrence": {
+          "freq": "daily",
+          "interval": 1,
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "critical",
+        "essential": true,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": {
+          "fromTime": "00:30",
+          "stepMinutes": 15,
+          "everyDays": 3,
+          "startDate": "2027-01-04",
+          "keepEnd": true
+        },
+        "notes": null,
+        "ref": "sleep",
+        "trackRef": null
+      },
+      {
+        "title": "Wind down & prepare for sleep",
+        "description": "Evening journal, screens down, lights low.",
+        "category": "sleep",
+        "startTime": "23:00",
+        "durationMinutes": 30,
+        "recurrence": {
+          "freq": "daily",
+          "interval": 1,
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": {
+          "fromTime": "00:00",
+          "stepMinutes": 15,
+          "everyDays": 3,
+          "startDate": "2027-01-04",
+          "keepEnd": false
+        },
+        "notes": null,
+        "ref": "wind_down",
+        "trackRef": null
+      },
+      {
+        "title": "Morning planning & journal",
+        "description": "Top three tasks, energy check, today’s plan.",
+        "category": "journaling",
+        "startTime": "07:15",
+        "durationMinutes": 15,
+        "recurrence": {
+          "freq": "daily",
+          "interval": 1,
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "medium",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": {
+          "recovery": "keep"
+        },
+        "progression": null,
+        "notes": null,
+        "ref": "morning_planning",
+        "trackRef": null
+      },
+      {
+        "title": "Get ready & commute",
+        "description": null,
+        "category": "personal",
+        "startTime": "08:45",
+        "durationMinutes": 45,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "medium",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "get_ready",
+        "trackRef": null
+      },
+      {
+        "title": "Work",
+        "description": null,
+        "category": "job",
+        "startTime": "09:30",
+        "durationMinutes": 510,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "critical",
+        "essential": true,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "work",
+        "trackRef": null
+      },
+      {
+        "title": "Commute, rest & food",
+        "description": "Decompress before studying. This hour is protected.",
+        "category": "rest",
+        "startTime": "18:00",
+        "durationMinutes": 60,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "medium",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "after_work",
+        "trackRef": null
+      },
+      {
+        "title": "Light revision",
+        "description": "Revisit problems due for spaced revision. Light, not new material.",
+        "category": "dsa",
+        "startTime": "07:45",
+        "durationMinutes": 30,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "low",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": {
+          "busy": "optional",
+          "low_energy": "optional",
+          "recovery": "skip"
+        },
+        "progression": null,
+        "notes": null,
+        "ref": "morning_revision",
+        "trackRef": "dsa"
+      },
+      {
+        "title": "DSA deep work",
+        "description": "Main learning session. Phone away, one problem or concept at a time.",
+        "category": "dsa",
+        "startTime": "19:00",
+        "durationMinutes": 70,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "session_main",
+        "trackRef": "dsa"
+      },
+      {
+        "title": "Break & dinner",
+        "description": null,
+        "category": "food",
+        "startTime": "20:10",
+        "durationMinutes": 30,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "medium",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "dinner_break",
+        "trackRef": null
+      },
+      {
+        "title": "System Design session",
+        "description": null,
+        "category": "system_design",
+        "startTime": "20:40",
+        "durationMinutes": 50,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 3, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "session_system_design",
+        "trackRef": "system_design"
+      },
+      {
+        "title": "CS Fundamentals session",
+        "description": null,
+        "category": "cs_fundamentals",
+        "startTime": "20:40",
+        "durationMinutes": 50,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [2, 4],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "session_cs_fundamentals",
+        "trackRef": "cs_fundamentals"
+      },
+      {
+        "title": "Personal time",
+        "description": "Free time. Missed sessions can be moved here if you choose to.",
+        "category": "personal",
+        "startTime": "21:30",
+        "durationMinutes": 90,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 2, 3, 4, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "low",
+        "essential": false,
+        "blocking": false,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "personal_time",
+        "trackRef": null
+      },
+      {
+        "title": "Weekend deep session",
+        "description": "Contest, mock interview, or a long practice block.",
+        "category": "dsa",
+        "startTime": "11:00",
+        "durationMinutes": 120,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [6],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "weekend_deep",
+        "trackRef": "dsa"
+      },
+      {
+        "title": "Weekly review & planning",
+        "description": "Look at the week’s numbers, reflect, and plan the next week.",
+        "category": "journaling",
+        "startTime": "11:00",
+        "durationMinutes": 45,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [7],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "high",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": {
+          "recovery": "keep"
+        },
+        "progression": null,
+        "notes": null,
+        "ref": "weekly_review",
+        "trackRef": null
+      },
+      {
+        "title": "Gym",
+        "description": "Strength and mobility. Recovery days are part of the plan.",
+        "category": "gym",
+        "startTime": "21:45",
+        "durationMinutes": 60,
+        "recurrence": {
+          "freq": "weekly",
+          "interval": 1,
+          "byWeekday": [1, 3, 5],
+          "startDate": "2027-01-04",
+          "endDate": null
+        },
+        "priority": "medium",
+        "essential": false,
+        "blocking": true,
+        "color": null,
+        "modeBehavior": null,
+        "progression": null,
+        "notes": null,
+        "ref": "gym_weekday",
+        "trackRef": null
+      }
+    ]
+  },
+  "reminders": [
+    {
+      "kind": "sleep",
+      "anchor": "activity_end",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": true,
+      "activityRef": "sleep"
+    },
+    {
+      "kind": "daily_planning",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Plan your day",
+      "body": "Morning journal, top three tasks, and a look at today’s schedule.",
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "morning_planning"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "morning_revision"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Get ready for work",
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "get_ready"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Work begins",
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "work"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Work done — rest & recharge",
+      "body": "Food, a walk, no screens if you can. Study starts in an hour.",
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "after_work"
+    },
+    {
+      "kind": "upcoming",
+      "anchor": "activity_start",
+      "offsetMinutes": -10,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_main"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_main"
+    },
+    {
+      "kind": "overdue",
+      "anchor": "activity_end",
+      "offsetMinutes": 20,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_main"
+    },
+    {
+      "kind": "upcoming",
+      "anchor": "activity_start",
+      "offsetMinutes": -10,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_system_design"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_system_design"
+    },
+    {
+      "kind": "overdue",
+      "anchor": "activity_end",
+      "offsetMinutes": 20,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_system_design"
+    },
+    {
+      "kind": "upcoming",
+      "anchor": "activity_start",
+      "offsetMinutes": -10,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_cs_fundamentals"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_cs_fundamentals"
+    },
+    {
+      "kind": "overdue",
+      "anchor": "activity_end",
+      "offsetMinutes": 20,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "session_cs_fundamentals"
+    },
+    {
+      "kind": "upcoming",
+      "anchor": "activity_start",
+      "offsetMinutes": -10,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "weekend_deep"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "weekend_deep"
+    },
+    {
+      "kind": "overdue",
+      "anchor": "activity_end",
+      "offsetMinutes": 20,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "weekend_deep"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Break & dinner",
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "dinner_break"
+    },
+    {
+      "kind": "start",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Personal time — you earned it",
+      "body": "Study block done. Mark today’s sessions so your stats stay honest.",
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "personal_time"
+    },
+    {
+      "kind": "upcoming",
+      "anchor": "activity_start",
+      "offsetMinutes": -15,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "gym_weekday"
+    },
+    {
+      "kind": "journal",
+      "anchor": "activity_start",
+      "offsetMinutes": -15,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Evening reflection",
+      "body": "Two minutes: what went well, and what to change tomorrow?",
+      "enabled": true,
+      "bypassQuietHours": true,
+      "activityRef": "wind_down"
+    },
+    {
+      "kind": "sleep",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Prepare for sleep",
+      "body": "Screens down, lights low. Bedtime in 30 minutes.",
+      "enabled": true,
+      "bypassQuietHours": true,
+      "activityRef": "wind_down"
+    },
+    {
+      "kind": "sleep",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": "Target bedtime",
+      "body": "Time to sleep. Tomorrow’s focus starts tonight.",
+      "enabled": true,
+      "bypassQuietHours": true,
+      "activityRef": "sleep"
+    },
+    {
+      "kind": "weekly_review",
+      "anchor": "activity_start",
+      "offsetMinutes": 0,
+      "time": null,
+      "recurrence": null,
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": "weekly_review"
+    },
+    {
+      "kind": "missed_digest",
+      "anchor": "time",
+      "offsetMinutes": 0,
+      "time": "21:35",
+      "recurrence": {
+        "freq": "daily",
+        "interval": 1,
+        "startDate": "2027-01-04",
+        "endDate": null
+      },
+      "daysBefore": null,
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": null
+    },
+    {
+      "kind": "milestone",
+      "anchor": "milestone",
+      "offsetMinutes": 0,
+      "time": "07:15",
+      "recurrence": null,
+      "daysBefore": [7, 1, 0],
+      "title": null,
+      "body": null,
+      "enabled": true,
+      "bypassQuietHours": false,
+      "activityRef": null
+    }
+  ],
+  "habits": [
+    {
+      "name": "DSA practice",
+      "description": null,
+      "targetPerWeek": 5,
+      "days": [],
+      "linkedCategory": "dsa",
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "System Design learning",
+      "description": null,
+      "targetPerWeek": 3,
+      "days": [],
+      "linkedCategory": "system_design",
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "Reading",
+      "description": null,
+      "targetPerWeek": 3,
+      "days": [],
+      "linkedCategory": null,
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "Sleep on time",
+      "description": null,
+      "targetPerWeek": 7,
+      "days": [],
+      "linkedCategory": null,
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "Journaling",
+      "description": null,
+      "targetPerWeek": 6,
+      "days": [],
+      "linkedCategory": "journaling",
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "Weekly planning",
+      "description": null,
+      "targetPerWeek": 1,
+      "days": [],
+      "linkedCategory": null,
+      "graceMissesPerWeek": 1,
+      "color": null
+    },
+    {
+      "name": "Gym",
+      "description": null,
+      "targetPerWeek": 3,
+      "days": [1, 3, 5],
+      "linkedCategory": "gym",
+      "graceMissesPerWeek": 1,
+      "color": null
+    }
+  ],
+  "career": {
+    "applications": []
+  },
+  "setup": {
+    "templateKey": "sde_interview",
+    "timezone": "UTC",
+    "goal": {
+      "title": "Become interview-ready for SDE-1 roles",
+      "targetRole": "SDE-1",
+      "targetCompanies": [],
+      "stretchCompanies": [],
+      "compensationTarget": null,
+      "description": null
+    },
+    "startDate": "2027-01-04",
+    "deadline": "2027-07-05",
+    "work": {
+      "enabled": true,
+      "label": "Work",
+      "days": [1, 2, 3, 4, 5],
+      "start": "09:30",
+      "end": "18:00",
+      "commuteMinutes": 30,
+      "pressure": "moderate"
+    },
+    "sleep": {
+      "currentBedtime": "00:30",
+      "currentWake": "08:00",
+      "targetBedtime": "23:30",
+      "targetWake": "07:00",
+      "gradualShift": true
+    },
+    "study": {
+      "weekdayMinutes": 120,
+      "weekendMinutes": 120,
+      "preferredWindow": "evening",
+      "morningRevisionMinutes": 30
+    },
+    "skills": {
+      "levels": {
+        "dsa": "beginner",
+        "system_design": "beginner",
+        "cs_fundamentals": "beginner"
+      },
+      "notes": null
+    },
+    "tracks": [
+      {
+        "ref": "dsa",
+        "title": "DSA",
+        "kind": "dsa",
+        "enabled": true
+      },
+      {
+        "ref": "system_design",
+        "title": "System Design",
+        "kind": "system_design",
+        "enabled": true
+      },
+      {
+        "ref": "cs_fundamentals",
+        "title": "CS Fundamentals",
+        "kind": "cs_fundamentals",
+        "enabled": true
+      }
+    ],
+    "reminders": {
+      "kinds": {},
+      "leadMinutes": 10,
+      "quietHours": {
+        "enabled": true,
+        "start": "23:45",
+        "end": "06:45"
+      }
+    },
+    "restDays": [7],
+    "fitness": {
+      "enabled": true,
+      "sessionsPerWeek": 3,
+      "days": [],
+      "durationMinutes": 60,
+      "time": null
+    }
+  }
+}

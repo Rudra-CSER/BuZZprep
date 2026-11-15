@@ -1,0 +1,62 @@
+# Production stack: app (API + scheduler + PWA), MongoDB, and Caddy for automatic HTTPS.
+#   1. cp .env.example .env   and fill it in (domain, secrets, VAPID keys)
+#   2. point your subdomain's DNS A/AAAA record at this server
+#   3. docker compose up -d --build
+name: buzzprep
+
+services:
+  app:
+    build: .
+    image: buzzprep:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://${MONGO_ROOT_USER:-buzzprep}:${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}@mongo:27017/buzzprep?authSource=admin
+      # One reverse proxy (Caddy or your nginx) sits in front of the app.
+      TRUST_PROXY: '1'
+    ports:
+      # Bound to localhost only — reach it through the reverse proxy.
+      - '127.0.0.1:${APP_PORT:-4000}:4000'
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./config:/config:ro
+
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-buzzprep}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set MONGO_ROOT_PASSWORD in .env}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    # Remove "caddy" from COMPOSE_PROFILES in .env if you use your own reverse proxy (see deploy/nginx).
+    profiles: ['caddy']
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN in .env}
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+
+volumes:
+  mongo-data:
+  caddy-data:
+  caddy-config:

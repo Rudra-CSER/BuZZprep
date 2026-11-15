@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>buZZprep</title>
+    <meta
+      name="description"
+      content="Plan your interview preparation: daily schedule, reliable reminders, DSA and system design tracking, journal and habits."
+    />
+    <!-- Browser and OS bars take the navigation's ink colour, so they read as one surface. -->
+    <meta name="theme-color" content="#161828" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#06070b" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Home Screen web app (iOS) -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="buZZprep" />
+    <!--
+      Edge to edge: the app draws behind the status bar and Dynamic Island, filling that area with
+      its ink top bar. The status bar text is white with this setting, so that area stays dark.
+    -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <!-- Applies the saved theme before first paint (external file keeps the CSP strict). -->
+    <script src="/theme-init.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>buZZprep needs JavaScript to run.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

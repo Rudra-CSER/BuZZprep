@@ -1,0 +1,26 @@
+{
+  "name": "@buzzprep/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Domain logic shared by the buZZprep server and PWA: time & recurrence engine, schedule expansion, reminders, revision, schemas and templates.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "luxon": "^3.7.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.7.6",
+    "vitest": "^5.1.0"
+  }
+}
